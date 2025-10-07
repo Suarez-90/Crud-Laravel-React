@@ -5,6 +5,8 @@ import { EditIcon, Trash2 } from 'lucide-react';
 // import { Button } from './ui/button';
 import DialogListTrab from './dialog-list-trab';
 import { DialogEditFormClient } from './dialog-edit-form-client';
+import DialogDeleteFormClient from './dialog-delete-from-client';
+import { useForm } from '@inertiajs/react';
 
 interface ColumnsProp {
     key: string;
@@ -26,7 +28,13 @@ interface CustomTableProps {
 }
 
 function CustomTable({ posts_list, columns }: CustomTableProps) {
-    // console.log(posts_list);
+    const {delete:destroy} = useForm()
+    
+    const hanleRemoveRow =(post:PostData)=>{
+        destroy(route('admin.post.destroy', post.id),{
+            preserveScroll:true
+        });
+    }
     return (
         <div className="overflow-hidden rounded-md border bg-background">
             <Table>
@@ -50,8 +58,9 @@ function CustomTable({ posts_list, columns }: CustomTableProps) {
                             <TableCell className="h-12 py-2">
                               <DialogListTrab name={post.name_p} listTrab={post.comments}/>                                                               
                             </TableCell>
-                            <TableCell className="flex h-12 py-2">
+                            <TableCell className="flex h-12 py-2 gap-2">
                                 <DialogEditFormClient postClient={post}/>
+                                <DialogDeleteFormClient handleDeleteClick={()=>hanleRemoveRow(post)}/>
                                 {/* {actions.map((item, index) => (                                    
                                      <Link
                                         as="button"
