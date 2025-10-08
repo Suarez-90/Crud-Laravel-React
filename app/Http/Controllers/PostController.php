@@ -118,7 +118,8 @@ class PostController extends Controller
                     ]);
                 };
         };
-        return to_route('admin.post.index')->with('success', 'Cliente creado correctamente');
+        // return to_route('admin.post.index')->with('success', 'Cliente creado correctamente');
+        return back();
     }
 
     /**
@@ -157,7 +158,7 @@ class PostController extends Controller
             
             if($request->has('workers')){
                 $comts = $request->workers;
-                dd($comts);
+                // dd($comts);
                 foreach ($comts as $comtsData) {
                     if(isset($comtsData['id'])){
                         $post->comments()
@@ -167,7 +168,6 @@ class PostController extends Controller
                             'nro_ident'=>$comtsData['ci_w']
                         ]);
                     }else {
-                        dd('No Existe');
                         $post->comments()->create([
                             'name_c'=> $comtsData['name_w'],
                             'nro_ident'=>$comtsData['ci_w']
@@ -185,8 +185,16 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Post $post)
-    {
+    {   
         $post->delete();
+        return back();
+    }
+    public function destroyComment(Post $post, Comments $comment )
+    {
+        // dd($pos?);
+        if ($comment->post_id === $post->id) {
+            $comment->delete();
+        }
         return back();
     }
 }

@@ -51,8 +51,8 @@ class StorePostRequest extends FormRequest
             'workers.*.name_w.string' => 'El nombre debe ser un String',
             'workers.*.name_w.max' => 'El nombre no debe exceder los 25 characters',
             'workers.*.name_w.unique' => 'Este nombre ya existe',
-            'workers.*.ci_w.required' => 'Este campo es requerido',
-            'workers.*.ci_w.integer' => 'El campo es de solo números',
+            'workers.*.ci_w.required' => 'Campo requerido',
+            'workers.*.ci_w.integer' => 'Campo de solo números',
             'workers.*.ci_w.min_digits' => 'El campo deber tener 11 digitos',
             'workers.*.ci_w.unique' => 'Este Nro. ya existe',
 

@@ -155,7 +155,7 @@ export default function DialogFormCliente() {
                             const errorWorkerCi = errors[`workers.${index}.ci_w`];
                             const isErrorWorker = errorWorkerName || errorWorkerCi ? true : false;
                             return (
-                                <div key={index} className="flex gap-2">
+                                <div key={index} className="flex justify-center gap-2">
                                     <div className="grow *:not-first:mt-2">
                                         <Label htmlFor={`${id}-name-${index}`}>Nombre Trabajador <span className='text-red-500'>*</span></Label>
                                         <Input

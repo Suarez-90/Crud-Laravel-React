@@ -17,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import { ChangeEvent, FormEvent, useId, useState } from 'react';
 // import { Calendar } from './ui/calendar';
 // import InputError from './input-error';
-import { PostData } from '@/types';
+import { CommentData, PostData } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { EditIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import InputDateCliente from './calendar-form-client';
@@ -31,7 +31,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
     const { name_p, nro_contract, date_contract, comments } = postClient;
     // console.log(postClient)
 
-    const { data, setData, errors, put, clearErrors, processing, } = useForm({
+    const { data, setData, errors, put, clearErrors, processing, delete:destroy } = useForm({
         nro_c: nro_contract || '',
         name_c: name_p || '',
         fecha_c: new Date(date_contract),
@@ -40,6 +40,8 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                 id: item.id,
                 name_w: item.name_c,
                 ci_w: item.nro_ident,
+                post_id: item.post_id
+
             };
         }) || [{ name_w: '', ci_w: '' }],
     });
@@ -52,15 +54,17 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
         setOpen(false);
     };
     const handleAddWorker = (i:number) => {
-        const newWorker = {id:i, name_w: '', ci_w: '' };
+        const newWorker = {id:i, name_w: '', ci_w: '', post_id: postClient.id };
         const addWorker = [...data.workers, newWorker];
         setData('workers', addWorker);
     };
 
-    const handleRemoveWorker = (i: number ) => {
-        const newList = data.workers.filter((_, index) => index !== i);
+    const handleRemoveWorker = (comment: CommentData ) => {
+        // const newList = data.workers.filter((_, index) => index !== i);
+        const newList = data.workers.filter((worker) => worker.id !== comment.id);
         setData('workers', newList);
-        // delete(route('admin.comments.destroy',comments[i].id));
+        destroy(route('admin.postcomment.destroy',{post :postClient.id, comment: comment.id}));
+        console.log(postClient.id,'-', comment.id)
 
     };
 
@@ -172,7 +176,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                             const errorWorkerCi = errors[`workers.${index}.ci_w`];
                             const isErrorWorker = errorWorkerName || errorWorkerCi ? true : false;
                             return (
-                                <div key={index} className="flex gap-2">
+                                <div key={item.id} className="flex gap-2">
                                     <div className="grow *:not-first:mt-2">
                                         <Label htmlFor={`${id}-name-${index}`}>Nombre Trabajador</Label>
                                         <Input
@@ -209,7 +213,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                                                         type="button"
                                                         size="icon"
                                                         aria-label="Add new item"
-                                                        onClick={index > 0 ? () => handleRemoveWorker(index) : () => handleAddWorker(index)}
+                                                        onClick={index > 0 ? () => handleRemoveWorker(item) : () => handleAddWorker(index)}
                                                     >
                                                         {index < 1 ? (
                                                             <PlusIcon size={16} aria-hidden="true" />

@@ -31,7 +31,7 @@ function CustomTable({ posts_list, columns }: CustomTableProps) {
     const {delete:destroy} = useForm()
     
     const hanleRemoveRow =(post:PostData)=>{
-        destroy(route('admin.post.destroy', post.id),{
+        destroy(route('admin.post.destroy', {post:post.id}),{
             preserveScroll:true
         });
     }
