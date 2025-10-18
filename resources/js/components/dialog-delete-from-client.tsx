@@ -10,7 +10,7 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { OctagonAlert, Trash2 } from 'lucide-react';
+import { OctagonAlert, Trash2, } from 'lucide-react';
 
 interface DeleteProp {
     handleDeleteClick : ()=>void
@@ -33,7 +33,7 @@ export default function DialogDeleteFormClient({handleDeleteClick}:DeleteProp) {
                     <AlertDialogHeader>
                         {/* <div className="flex size-12 items-center justify-center rounded-full border"> */}
                             
-                            <AlertDialogTitle className='flex gap-3 text-2xl'>
+                            <AlertDialogTitle className='flex gap-3 text-xl'>
                                 <OctagonAlert color="red" className="opacity-80" size={32} />
                                 Are you sure?</AlertDialogTitle>
                         {/* </div> */}

@@ -1,5 +1,4 @@
 import { ChangeEvent, FormEvent, useId, useState } from 'react';
-
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -19,28 +18,12 @@ import { MinusIcon, PlusIcon } from 'lucide-react';
 import InputDateCliente from './calendar-form-client';
 import InputError from './input-error';
 
-// interface ClienteData {
-//     nro_c: number | null;
-//     name_c: string;
-//     fecha_c: Date | undefined;
-// }
-// interface WorkerData {
-//     [key: number]: string;
-//     name_w: string;
-//     ci_w: string;
-// }
-// interface PostFormData {
-//     nro_c: number | null;
-//     name_c: string;
-//     fecha_c: Date | undefined;
-//     workers: WorkerData[];
-// }
-
 export default function DialogFormCliente() {
     const [open, setOpen] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
     const id = useId();
 
-    const { data, setData, errors,  processing, post, resetAndClearErrors, wasSuccessful, isDirty } = useForm({
+    const { data, setData, errors,  processing, post, reset, clearErrors } = useForm({
         nro_c: '',
         name_c: '',
         fecha_c: new Date(),
@@ -51,7 +34,6 @@ export default function DialogFormCliente() {
             },
         ],
     });
-
     const { nro_c, name_c, fecha_c, workers } = data;
 
     const handleAddWorker = () => {
@@ -74,38 +56,50 @@ export default function DialogFormCliente() {
     const handleChange = (e: ChangeEvent<HTMLInputElement>, i = -1) => {
         const name_inpt = e.target.name;
         const value_inpt = e.target.value;
-
+        
         if (name_inpt === 'nro_c' && value_inpt !== ' ') return setData('nro_c', value_inpt);
         if (name_inpt === 'name_c' && value_inpt !== ' ') return setData('name_c', value_inpt);
 
         const newWorker = [...workers];
 
         if (name_inpt === `name_w_${i}` && value_inpt !== ' ') {
-            newWorker[i].name_w = value_inpt;
+            newWorker[i]['name_w'] = value_inpt;
             return setData('workers', newWorker);
         }
         if (name_inpt === `ci_w_${i}` && value_inpt !== ' ') {
-            newWorker[i].ci_w = value_inpt;
+            newWorker[i]['ci_w'] = value_inpt;
             return setData('workers', newWorker);
         }
     };
+    const handleResetForm = ()=>{
+        const newState = !openModal
+        if (newState==false){    
+            reset('nro_c', 'name_c');
+            setData('workers', [{
+                name_w: '',
+                ci_w: '',
+            }]);
+            clearErrors();           
+        }
+        setOpenModal(newState)        
+    }
 
     const handleCreateSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         post(route('admin.post.store'), {
             preserveScroll: true,
             preserveState:true,
-            onSuccess : ()=>resetAndClearErrors(),
+            onSuccess : ()=>handleResetForm(),
             onError: ()=>console.error('Error Creando el Cliente'),
         });        
     };    
 
     return (
-        <Dialog defaultOpen={wasSuccessful? true : false}>
+        <Dialog open={openModal} onOpenChange={handleResetForm}>
             <DialogTrigger asChild>
                 <Button variant="default">Agregar Cliente</Button>
             </DialogTrigger>
-            <DialogContent className="lg:max-w-lg" onInteractOutside={(e)=>e.preventDefault()} onEscapeKeyDown={()=>resetAndClearErrors()}>
+            <DialogContent className="lg:max-w-lg" onInteractOutside={(e)=>e.preventDefault()} onEscapeKeyDown={handleResetForm}>
                 <div className="flex flex-col items-center gap-2">
                     <div className="flex size-11 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
                         <svg
@@ -160,7 +154,7 @@ export default function DialogFormCliente() {
                                         <Label htmlFor={`${id}-name-${index}`}>Nombre Trabajador <span className='text-red-500'>*</span></Label>
                                         <Input
                                             id={`${id}-name-${index}`}
-                                            placeholder="Alberto Perez"
+                                            placeholder="Alberto Perez ..."
                                             name={`name_w_${index}`}
                                             type="text"
                                             onChange={(e) => handleChange(e, index)}
@@ -213,7 +207,7 @@ export default function DialogFormCliente() {
                     </div>                    
                     <DialogFooter className="border-t px-6 py-4">
                         <DialogClose asChild>
-                            <Button type="button" className='cursor-pointer' variant="outline" onClick={()=>resetAndClearErrors()}>
+                            <Button type="button" className='cursor-pointer' variant="outline" onClick={handleResetForm}>
                                 Cancel
                             </Button>
                         </DialogClose>

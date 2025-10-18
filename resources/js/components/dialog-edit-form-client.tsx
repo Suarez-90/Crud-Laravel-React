@@ -17,7 +17,7 @@ import { Label } from '@/components/ui/label';
 import { ChangeEvent, FormEvent, useId, useState } from 'react';
 // import { Calendar } from './ui/calendar';
 // import InputError from './input-error';
-import { CommentData, PostData } from '@/types';
+import { PostData } from '@/types';
 import { useForm } from '@inertiajs/react';
 import { EditIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import InputDateCliente from './calendar-form-client';
@@ -27,25 +27,33 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/t
 
 export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
     const [open, setOpen] = useState(false);
+    const [openDialog, setOpenDialog] = useState(false);
     const id = useId();
     const { name_p, nro_contract, date_contract, comments } = postClient;
-    // console.log(postClient)
 
-    const { data, setData, errors, put, clearErrors, processing, delete:destroy } = useForm({
-        nro_c: nro_contract || '',
-        name_c: name_p || '',
-        fecha_c: new Date(date_contract),
-        workers: comments.map((item) => {
+    const initialComments = comments.map((item) => {
             return {
-                id: item.id,
+                id: item.id || null,
                 name_w: item.name_c,
                 ci_w: item.nro_ident,
-                post_id: item.post_id
-
             };
-        }) || [{ name_w: '', ci_w: '' }],
+        });
+
+    const {
+        data,
+        setData,
+        errors,
+        put,
+        clearErrors,
+        processing,
+        reset,
+    } = useForm({
+        nro_c: nro_contract,
+        name_c: name_p,
+        fecha_c: new Date(date_contract),
+        workers: initialComments,
     });
-    
+    // const initialData = useRef(data)
 
     const onChangeDate = (date: Date | undefined) => {
         if (date !== undefined) {
@@ -53,19 +61,17 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
         }
         setOpen(false);
     };
-    const handleAddWorker = (i:number) => {
-        const newWorker = {id:i, name_w: '', ci_w: '', post_id: postClient.id };
+    const handleAddWorker = () => {
+        const newWorker = { id: null, name_w: '', ci_w: '' };
         const addWorker = [...data.workers, newWorker];
         setData('workers', addWorker);
     };
 
-    const handleRemoveWorker = (comment: CommentData ) => {
-        // const newList = data.workers.filter((_, index) => index !== i);
-        const newList = data.workers.filter((worker) => worker.id !== comment.id);
-        setData('workers', newList);
-        destroy(route('admin.postcomment.destroy',{post :postClient.id, comment: comment.id}));
-        console.log(postClient.id,'-', comment.id)
-
+    const handleRemoveWorker = (item: { id: number | null; name_w: string; ci_w: string }, i : number) => {
+        const newList = data.workers.filter((_,index) => index !==i);
+            console.log(postClient.id, '-', item, ' Nuevo');
+            setData('workers', newList);
+      
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>, i = -1) => {
@@ -76,30 +82,41 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
 
         const newWorker = [...data.workers];
 
-        if (name_inpt === `name_w_${i}` && value_inpt !== ' ') {
+        if (name_inpt === `workers.${i}.name_w` && value_inpt !== ' ') {
             newWorker[i].name_w = value_inpt;
             return setData('workers', newWorker);
         }
-        if (name_inpt === `ci_w_${i}` && value_inpt !== ' ') {
+        if (name_inpt === `workers.${i}.ci_w` && value_inpt !== ' ') {
             newWorker[i].ci_w = value_inpt;
             return setData('workers', newWorker);
         }
     };
-
+    const handleResetForm = ()=>{
+        const newState = !openDialog
+        if (newState==false){    
+            reset('nro_c', 'name_c');
+            setData('workers', initialComments);
+            // setData('workers', [{
+            //     name_w: '',
+            //     ci_w: '',
+            // }]);
+            clearErrors();           
+        }
+        setOpenDialog(newState)        
+    }   
     const handleEditSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
         put(route('admin.post.update', postClient.id), {
             preserveScroll: true,
-            // preserveState: true,
-            // preserveUrl: true
-            // onSuccess: () => resetAndClearErrors(),
-            // onError: () => console.error('Error Creando el Cliente'),
+            // preserveUrl:true,
+            onSuccess: ()=>handleResetForm(),
+            // onFinish: ()=>setOpenDialog(false),
+            onError: () => console.error('Error Creando el Cliente'),
         });
     };
 
     return (
-        <Dialog>
+        <Dialog open={openDialog} onOpenChange={handleResetForm}>
             <DialogTrigger asChild>
                 <Button
                     variant={'default'}
@@ -174,15 +191,15 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                         {data.workers.map((item, index) => {
                             const errorWorkerName = errors[`workers.${index}.name_w`];
                             const errorWorkerCi = errors[`workers.${index}.ci_w`];
-                            const isErrorWorker = errorWorkerName || errorWorkerCi ? true : false;
+                            // const isErrorWorker = errorWorkerName || errorWorkerCi ? true : false;
                             return (
-                                <div key={item.id} className="flex gap-2">
+                                <div key={index} className="flex gap-2">
                                     <div className="grow *:not-first:mt-2">
                                         <Label htmlFor={`${id}-name-${index}`}>Nombre Trabajador</Label>
                                         <Input
                                             id={`${id}-name-${index}`}
                                             placeholder="Alberto Perez"
-                                            name={`name_w_${index}`}
+                                            name={`workers.${index}.name_w`}
                                             type="text"
                                             onChange={(e) => handleChange(e, index)}
                                             value={item.name_w}
@@ -195,7 +212,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                                         <Input
                                             id={`${id}-ci-${index}`}
                                             placeholder="#####..."
-                                            name={`ci_w_${index}`}
+                                            name={`workers.${index}.ci_w`}
                                             type="text"
                                             onChange={(e) => handleChange(e, index)}
                                             value={item.ci_w}
@@ -203,8 +220,8 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                                         />
                                         <InputError message={errorWorkerCi} />
                                     </div>
-                                    <div className={!isErrorWorker ? 'self-end' : 'self-center'}>
-                                        <TooltipProvider delayDuration={0}>
+                                    <div className="mt-8">
+                                        <TooltipProvider delayDuration={300}>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Button
@@ -213,7 +230,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                                                         type="button"
                                                         size="icon"
                                                         aria-label="Add new item"
-                                                        onClick={index > 0 ? () => handleRemoveWorker(item) : () => handleAddWorker(index)}
+                                                        onClick={index > 0 ? () => handleRemoveWorker(item, index) : () => handleAddWorker()}
                                                     >
                                                         {index < 1 ? (
                                                             <PlusIcon size={16} aria-hidden="true" />
@@ -234,11 +251,13 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                     </div>
                     <DialogFooter className="border-t px-6 py-4">
                         <DialogClose asChild>
-                            <Button type="button" className='cursor-pointer' variant="outline" onClick={() => clearErrors()}>
+                            <Button type="button" className="cursor-pointer" variant="outline" onClick={handleResetForm}>
                                 Cancel
                             </Button>
                         </DialogClose>
-                        <Button type="submit" disabled={processing} className='cursor-pointer'>Actualizar Datos</Button>
+                        <Button type="submit" disabled={processing} className="cursor-pointer">
+                            {processing ? 'Actualizando' : 'Actualizar'} Datos
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

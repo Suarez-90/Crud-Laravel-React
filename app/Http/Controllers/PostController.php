@@ -20,7 +20,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {   
-        $postsQuery = Post::with(['comments']);        
+        $postsQuery = Post::with(['comments']);      
         
         if ($request->filled('search')  ) {
             $searchFilter = $request->search;       
@@ -97,9 +97,9 @@ class PostController extends Controller
      * @param StorePostRequest $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StorePostRequest $request)
+    public function store(UpdatePostRequest $request)
     {
-        // dd($request->only('nro_c', 'name_c', 'fecha_c'));
+        // dd($request);
         $fc = substr($request->validated('fecha_c'), '0', '10');        
         // $cliente = Post::create($request->only('nro_c', 'name_c', $fc));
         $cliente = Post::create([
@@ -146,7 +146,7 @@ class PostController extends Controller
     public function update(UpdatePostRequest $request, Post $post)
     {
         
-        // dd( $request->workers);
+        // dd( $request->validated('workers')[0], $request->workers[0]);
         
         if ($post) {            
             $fc = substr($request->validated('fecha_c'), '0', '10');
@@ -155,30 +155,39 @@ class PostController extends Controller
                 $post->name_p = $request->validated('name_c'),
                 $post->date_contract = $fc,
             ]);
-            
             if($request->has('workers')){
-                $comts = $request->workers;
-                // dd($comts);
-                foreach ($comts as $comtsData) {
+                // $cmts_request = collect($request->input('workers',[]));
+                $comts_request = collect($request->validated('workers'));
+                $postId = $post->comments()->pluck('id')->toArray();
+                $requestId = $comts_request->pluck('id')->filter()->toArray();
+                // dd($requestId);
+
+                $toDelete = array_diff($postId,$requestId);
+                if(!empty($toDelete)){
+                    $post->comments()->whereIn('id', $toDelete)->delete();
+                }
+
+                foreach ($comts_request as $comtsData) {                    
                     if(isset($comtsData['id'])){
                         $post->comments()
                         ->where('id', $comtsData['id'])
                         ->update([
-                            'name_c'=> $comtsData['name_w'],
-                            'nro_ident'=>$comtsData['ci_w']
-                        ]);
+                                'name_c'=> $comtsData['name_w'],
+                                'nro_ident'=>$comtsData['ci_w']
+                            ]);
                     }else {
+                        // dd($comtsData['id'], $post);
                         $post->comments()->create([
                             'name_c'=> $comtsData['name_w'],
                             'nro_ident'=>$comtsData['ci_w']
                         ]);
-                    }                
+                    }           
                 };
-                // return back();
             }
         };       
+        return back();
 
-        return to_route('admin.post.index')->with('success', 'Cliente actualizado correctamente');       
+        // return to_route('admin.post.index')->with('success', 'Cliente actualizado correctamente');       
     }
 
     /**
@@ -191,7 +200,7 @@ class PostController extends Controller
     }
     public function destroyComment(Post $post, Comments $comment )
     {
-        // dd($pos?);
+        // dd($comment->post_id);
         if ($comment->post_id === $post->id) {
             $comment->delete();
         }

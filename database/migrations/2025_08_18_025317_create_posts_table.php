@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->integer('nro_contract');
-            $table->string('name_p');
-            $table->date('date_contract');
+            $table->integer('nro_contract')->unique();
+            $table->string('name_p')->unique();
+            $table->date('date_contract')->nullable();
             $table->timestamps();
             // $table->foreignId('category_id')->constrained()->cascadeOnDelete();
         });

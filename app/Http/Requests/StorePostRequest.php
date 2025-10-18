@@ -30,8 +30,9 @@ class StorePostRequest extends FormRequest
             "nro_c"  => 'required|integer|min:1|unique:posts,nro_contract',
             "name_c"  => 'required|string|max:30|unique:posts,name_p',
             "fecha_c" => 'nullable',
+            "workers" => 'nullable|array',
             'workers.*.name_w'=> 'required|string|max:25|unique:comments,name_c',
-            'workers.*.ci_w'=> 'required|integer|min_digits:11|unique:comments,nro_ident',
+            'workers.*.ci_w'=> 'required|string|max:11|unique:comments,nro_ident',
 
         ];
     }
@@ -52,8 +53,8 @@ class StorePostRequest extends FormRequest
             'workers.*.name_w.max' => 'El nombre no debe exceder los 25 characters',
             'workers.*.name_w.unique' => 'Este nombre ya existe',
             'workers.*.ci_w.required' => 'Campo requerido',
-            'workers.*.ci_w.integer' => 'Campo de solo números',
-            'workers.*.ci_w.min_digits' => 'El campo deber tener 11 digitos',
+            'workers.*.ci_w.string' => 'Campo de solo string',
+            'workers.*.ci_w.max' => 'El campo deber tener 11 digitos',
             'workers.*.ci_w.unique' => 'Este Nro. ya existe',
 
         ];
