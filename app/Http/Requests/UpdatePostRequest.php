@@ -51,7 +51,8 @@ class UpdatePostRequest extends FormRequest
             'workers.*.ci_w' => [
                 'required',
                 'string',
-                'max:11',                
+                'max:11',
+                'min:9'                
             ],
             // "nro_c"  => 'required|integer|min:1|unique:posts,nro_contract,'. $postId,
             // "name_c"  => `required|string|max:30|unique:posts,name_p,$postId`,
@@ -154,7 +155,8 @@ class UpdatePostRequest extends FormRequest
             'workers.*.name_w.max' => 'El nombre no debe exceder los 50 characters',
             'workers.*.ci_w.required' => 'Este campo es requerido',
             // 'workers.*.ci_w.string' => 'Campo de solo string',
-            'workers.*.ci_w.max_digits' => 'Campo de 11 digitos',
+            'workers.*.ci_w.max' => 'Campo de 11 digitos máximo',
+            'workers.*.ci_w.min' => 'Campo de 9 digitos mínimo',
 
         ];
     }

@@ -119,7 +119,7 @@ class PostController extends Controller
                 };
         };
         // return to_route('admin.post.index')->with('success', 'Cliente creado correctamente');
-        return back();
+        return back()->with('success', 'Cliente creado correctamente');
     }
 
     /**
@@ -185,7 +185,7 @@ class PostController extends Controller
                 };
             }
         };       
-        return back();
+        return redirect()->back()->with('success', 'Cliente actualizado correctamente');
 
         // return to_route('admin.post.index')->with('success', 'Cliente actualizado correctamente');       
     }
@@ -196,7 +196,7 @@ class PostController extends Controller
     public function destroy(Post $post)
     {   
         $post->delete();
-        return back();
+        return back()->with('success', 'Cliente eliminado correctamente');
     }
     public function destroyComment(Post $post, Comments $comment )
     {

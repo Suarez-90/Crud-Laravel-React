@@ -17,6 +17,7 @@ import { useForm } from '@inertiajs/react';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import InputDateCliente from './calendar-form-client';
 import InputError from './input-error';
+import { toast } from 'sonner';
 
 export default function DialogFormCliente() {
     const [open, setOpen] = useState(false);
@@ -81,7 +82,7 @@ export default function DialogFormCliente() {
             }]);
             clearErrors();           
         }
-        setOpenModal(newState)        
+        setOpenModal(newState);              
     }
 
     const handleCreateSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -89,8 +90,11 @@ export default function DialogFormCliente() {
         post(route('admin.post.store'), {
             preserveScroll: true,
             preserveState:true,
-            onSuccess : ()=>handleResetForm(),
-            onError: ()=>console.error('Error Creando el Cliente'),
+            onSuccess : ()=>{
+                handleResetForm();
+                toast.success('Cliente Creado Correctamente')
+            },
+            onError: (errors)=>{toast.error(errors.error || 'Error Creando el Cliente')},
         });        
     };    
 

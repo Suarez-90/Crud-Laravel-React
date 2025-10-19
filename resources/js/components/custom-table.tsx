@@ -6,7 +6,8 @@ import { EditIcon, Trash2 } from 'lucide-react';
 import DialogListTrab from './dialog-list-trab';
 import { DialogEditFormClient } from './dialog-edit-form-client';
 import DialogDeleteFormClient from './dialog-delete-from-client';
-import { useForm } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
+import { toast } from 'sonner';
 
 interface ColumnsProp {
     key: string;
@@ -28,14 +29,19 @@ interface CustomTableProps {
 }
 
 function CustomTable({ posts_list, columns }: CustomTableProps) {
+    const dataPage = usePage().props
     const {delete:destroy} = useForm()
     
     const hanleRemoveRow =(post:PostData)=>{
         destroy(route('admin.post.destroy', {post:post.id}),{
-            preserveScroll:true
+            preserveScroll:true,
+            preserveState: true,
+            onSuccess: ()=>{toast.success('Cliente eliminado correctamente')},
+            onError: (errors)=>{toast.error(errors.error || 'Error al eliminar Cliente')} 
         });
     }
-    return (
+    console.log(dataPage)
+    return (        
         <div className="overflow-hidden rounded-md border bg-background">
             <Table>
                 <TableHeader>
@@ -60,22 +66,7 @@ function CustomTable({ posts_list, columns }: CustomTableProps) {
                             </TableCell>
                             <TableCell className="flex h-12 py-2 gap-2">
                                 <DialogEditFormClient postClient={post}/>
-                                <DialogDeleteFormClient handleDeleteClick={()=>hanleRemoveRow(post)}/>
-                                {/* {actions.map((item, index) => (                                    
-                                     <Link
-                                        as="button"
-                                        key={index}
-                                        href={item.route}
-                                        onClick={()=>console.log(item.route)}
-                                        className={`ms-2 cursor-pointer rounded-lg p-2 text-white hover:opacity-80 transition-transform hover:scale-115 ${item.className}`}
-                                    > */}
-                                        {/* <Icon iconNode={item.icon} className={item.className}/> */}
-                                        {/* {<item.icon size={14} className='' />}
-                                    </Link>
-                                   <Link key={index} href={'#'}>
-                                        
-                                     </Link> 
-                                ))} */}
+                                <DialogDeleteFormClient handleDeleteClick={()=>hanleRemoveRow(post)}/>                               
                             </TableCell>
                         </TableRow>
                     ))}

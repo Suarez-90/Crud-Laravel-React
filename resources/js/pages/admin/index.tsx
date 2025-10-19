@@ -10,6 +10,7 @@ import { useId, } from 'react';
 // import { Button } from '@/components/ui/button';
 import { SearchIcon } from 'lucide-react';
 import DialogFormCliente from '@/components/dialog-form-client';
+import { Toaster } from '@/components/ui/sonner';
 
 function ListClientes({ posts }: Omit<DashboardProps, 'filters'>) {
     const idFilterTable = useId();
@@ -35,6 +36,7 @@ function ListClientes({ posts }: Omit<DashboardProps, 'filters'>) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Clientes" />
+            <Toaster position='top-right' duration={2500} closeButton richColors/>
             <div className="flex h-full flex-1 flex-col gap-2 overflow-x-auto rounded-xl p-4">
                 <header className="mb-2 flex flex-col items-start gap-4">
                     <h1 className="text-2xl font-bold">Listado de Clientes</h1>

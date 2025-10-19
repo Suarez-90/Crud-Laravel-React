@@ -23,7 +23,7 @@ function DialogListTrab({ name, listTrab }: DialogTrabProps) {
             <DialogTrigger asChild>
                 <Button variant="outline" className="gap-3 cursor-pointer">
                     {`Trabajadores`}
-                    <span className="-me-1 bg-cyan-500 inline-flex h-5 max-h-full items-center rounded border px-1 pt-0.5 font-[inherit] text-[0.625rem] font-medium text-muted-foreground">
+                    <span className="-me-1 dark:bg-teal-400 bg-gray-300 inline-flex h-5 max-h-full items-center rounded border px-1 pt-0.5 font-[inherit] text-[0.625rem] font-medium text-muted-foreground">
                         {listTrab.length}
                     </span>
                 </Button>

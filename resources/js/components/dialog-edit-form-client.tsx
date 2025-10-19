@@ -23,6 +23,7 @@ import { EditIcon, MinusIcon, PlusIcon } from 'lucide-react';
 import InputDateCliente from './calendar-form-client';
 import InputError from './input-error';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { toast } from 'sonner';
 // import { Tooltip, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
@@ -109,9 +110,11 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
         put(route('admin.post.update', postClient.id), {
             preserveScroll: true,
             // preserveUrl:true,
-            onSuccess: ()=>handleResetForm(),
-            // onFinish: ()=>setOpenDialog(false),
-            onError: () => console.error('Error Creando el Cliente'),
+           onSuccess : ()=>{
+                handleResetForm();
+                toast.success('Cliente Actualizado Correctamente')
+            },
+            onError: (errors)=>{toast.error(errors.error || 'Error Actualizando el Cliente')},
         });
     };
 
@@ -208,7 +211,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                                         <InputError message={errorWorkerName} />
                                     </div>
                                     <div className="w-32 *:not-first:mt-2">
-                                        <Label htmlFor={`${id}-ci-${index}`}>Nro. Identidad</Label>
+                                        <Label htmlFor={`${id}-ci-${index}`}>Nro.Identificación</Label>
                                         <Input
                                             id={`${id}-ci-${index}`}
                                             placeholder="#####..."
@@ -221,7 +224,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                                         <InputError message={errorWorkerCi} />
                                     </div>
                                     <div className="mt-8">
-                                        <TooltipProvider delayDuration={300}>
+                                        <TooltipProvider delayDuration={700}>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>
                                                     <Button
@@ -230,6 +233,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                                                         type="button"
                                                         size="icon"
                                                         aria-label="Add new item"
+                                                        className='cursor-pointer'
                                                         onClick={index > 0 ? () => handleRemoveWorker(item, index) : () => handleAddWorker()}
                                                     >
                                                         {index < 1 ? (

@@ -102,7 +102,7 @@ export default function Dashboard({ ...props }: DashboardProps) {
                     </div>
                      */}
                 </div>
-                {/* Paginatio Component */}
+                {/* Pagination Component */}
                 <IndexPagination postsPag={posts} per_Page={data.perPage} onSelectChange={handleSelectChange} />
             </div>
         </AppLayout>
