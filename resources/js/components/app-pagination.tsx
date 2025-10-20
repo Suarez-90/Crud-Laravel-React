@@ -25,7 +25,7 @@ interface PaginationData {
 function IndexPagination({ postsPag, per_Page, onSelectChange }: PaginationData) {
     const { current_page, last_page, first_page_url, prev_page_url, next_page_url, last_page_url, total } = postsPag;
     const id = useId();
-    // console.log(postsPag)
+    // console.log(per_Page)
 
     return (
         <div className="flex items-center justify-between gap-6">
@@ -33,17 +33,17 @@ function IndexPagination({ postsPag, per_Page, onSelectChange }: PaginationData)
             <div className="flex items-center gap-3">
                 <Label htmlFor={id}>Datos por páginas</Label>
                 <Select onValueChange={onSelectChange} value={per_Page}>
-                    <SelectTrigger id={id} className="w-fit gap-1.5 whitespace-nowrap">
-                        <SelectValue placeholder="Select number of results" />
+                    <SelectTrigger id={id} className="w-fit gap-1.5 whitespace-nowrap cursor-pointer">
+                        <SelectValue placeholder="Results for Page" />
                     </SelectTrigger>
                     <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
-                        <SelectItem value="2">2</SelectItem>
+                        {/* <SelectItem value="2">2</SelectItem>
                         <SelectItem value="4">4</SelectItem>
-                        <SelectItem value="6">6</SelectItem>
-                        {/* <SelectItem value="15">15</SelectItem>
+                        <SelectItem value="6">6</SelectItem> */}
+                        <SelectItem value="15">15</SelectItem>
                         <SelectItem value="25">25</SelectItem>
                         <SelectItem value="50">50</SelectItem>
-                        <SelectItem value="100">100</SelectItem> */}
+                        <SelectItem value="100">100</SelectItem>
                     </SelectContent>
                 </Select>
             </div>

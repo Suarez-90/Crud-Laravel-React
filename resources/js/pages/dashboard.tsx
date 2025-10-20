@@ -18,7 +18,7 @@ export default function Dashboard({ ...props }: DashboardProps) {
     const { posts, filters } = props;
     const { data, setData } = useForm({
         searchPost: filters.search || '',
-        perPage: filters.perPage || '2',
+        perPage: filters.perPage || '15',
         orderPost: filters.orderPost || 'default',
     });
     // console.log(posts)

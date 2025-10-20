@@ -41,17 +41,17 @@ function IndexFilters({ valuePost, valueSelect, onFilterChange, onSelectFilterCh
                 </div>
             </div>
             <div className="flex items-center gap-1.5">
-                <Label htmlFor={idSelect} className="text-md">
-                    Ordernar por:
+                <Label htmlFor={`${idSelect}-header`} className="text-md">
+                    Ordernar Contratos:
                 </Label>
                 <Select onValueChange={onSelectFilterChange} value={valueSelect} >
-                    <SelectTrigger id={idSelect} tabIndex={2} className="w-40 gap-1.5 whitespace-nowrap">
+                    <SelectTrigger id={`${idSelect}-header`} tabIndex={2} className="w-fit gap-1.5 whitespace-nowrap cursor-pointer">
                         <SelectValue placeholder="Selecciona Opción" />
                     </SelectTrigger>
                     <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
-                        <SelectItem value="default">Defecto</SelectItem>
-                        <SelectItem value="contrato">Nro. Contrato</SelectItem>
-                        <SelectItem value="fecha">Fecha Contrato</SelectItem>
+                        <SelectItem value="default">ASC</SelectItem>
+                        <SelectItem value="contrato">DESC</SelectItem>
+                        <SelectItem value="fecha">FECHA</SelectItem>
                     </SelectContent>
                 </Select>
             </div>

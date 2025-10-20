@@ -35,16 +35,16 @@ class PostController extends Controller
 
             }
         if($request->has('orderPost') && $request->orderPost ==='contrato' ){                        
-                $postsQuery->orderBy('nro_contract','asc');            
+                $postsQuery->orderBy('nro_contract','desc');
         } 
         if($request->has('orderPost') && $request->orderPost ==='fecha' ){                        
                 $postsQuery->orderBy('date_contract','asc');            
         }       
 
         $paginationPage = (int) $request->perPage;
-        $perPage = $paginationPage==0 ? 2 : $paginationPage;
+        $perPage = $paginationPage==0 ? 15 : $paginationPage;
 
-        $posts = $postsQuery->paginate($perPage)->withQueryString();
+        $posts = $postsQuery->orderBy('nro_contract')->paginate($perPage)->withQueryString();
         // dump($posts);
         return Inertia::render("dashboard", [
             "posts"=> $posts,
@@ -54,9 +54,9 @@ class PostController extends Controller
     public function indexList(Request $request){
 
         $postsQuery = Post::with(['comments']);
-        
+
         if ($request->filled('search')  ) {
-            $searchFilter = $request->search;       
+            $searchFilter = $request->search;
 
             $postsQuery->where(function($query) use($searchFilter){
                 $query->where('nro_contract', 'like', "%{$searchFilter}%")
@@ -66,7 +66,7 @@ class PostController extends Controller
                     ->orWhere('nro_ident', 'like', "%{$searchFilter}%");
                 });
 
-            }
+        }
         if($request->has('orderPost') && $request->orderPost ==='contrato' ){                        
                 $postsQuery->orderBy('nro_contract','asc');            
         } 
@@ -75,12 +75,13 @@ class PostController extends Controller
         }       
 
         $paginationPage = (int) $request->perPage;
-        $perPage = $paginationPage==0 ? 12 : $paginationPage;
+        $perPage = $paginationPage==0 ? 15 : $paginationPage;
 
-        $posts = $postsQuery->paginate($perPage)->withQueryString();
+        $posts = $postsQuery->orderBy('nro_contract')->paginate($perPage)->withQueryString();
 
         return Inertia::render('admin/index',[
-            'posts'=> $posts
+            'posts'=> $posts,
+            "filters"=>$request->only(['search', 'perPage'])
         ]);
     }
 

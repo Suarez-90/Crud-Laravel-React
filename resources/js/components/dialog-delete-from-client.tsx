@@ -16,10 +16,7 @@ interface DeleteProp {
     handleDeleteClick : ()=>void
 }
 
-export default function DialogDeleteFormClient({handleDeleteClick}:DeleteProp) {
-    // const handleDeleteClick = () => {
-    //     console.log('Delete');
-    // };
+export default function DialogDeleteFormClient({handleDeleteClick}:DeleteProp) {   
 
     return (
         <AlertDialog>
@@ -43,8 +40,8 @@ export default function DialogDeleteFormClient({handleDeleteClick}:DeleteProp) {
                     </AlertDialogHeader>
                 {/* </div> */}
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction className="bg-red-500 hover:bg-red-600" onClick={handleDeleteClick}>
+                    <AlertDialogCancel className='cursor-pointer'>Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="cursor-pointer dark:text-foreground bg-red-500 hover:bg-red-600" onClick={handleDeleteClick}>
                         Delete
                     </AlertDialogAction>
                 </AlertDialogFooter>

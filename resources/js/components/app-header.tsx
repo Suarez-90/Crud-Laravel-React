@@ -28,7 +28,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Usuarios',
-        href: 'admin/usuarios',
+        href: '/admin/usuarios',
         icon: Users,
     },
 ];
@@ -54,7 +54,7 @@ interface AppHeaderProps {
 
 export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
-    console.log(page.url);
+    const activeStyleMenu = page.url.split('',10).join('')==='/dashboard'? page.url.split('',10).join('') : page.url.split('',15).join('')
     const { auth } = page.props;
     const getInitials = useInitials();
     return (
@@ -126,7 +126,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                             {item.icon && <Icon iconNode={item.icon} className="mr-2 h-4 w-4" />}
                                             {item.title}
                                         </Link>
-                                        {page.url === item.href && (
+                                        {activeStyleMenu === item.href && (
                                             <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
                                         )}
                                     </NavigationMenuItem>

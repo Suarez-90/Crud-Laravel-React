@@ -156,7 +156,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                     <div className="space-y-4">
                         <div className="flex gap-2">
                             <div className="*:not-first:mt-2">
-                                <Label htmlFor={`${id}-contrato`}>Nro. Contrato</Label>
+                                <Label htmlFor={`${id}-contrato`}>Nro. Contrato <span className='text-red-600'>*</span></Label>
                                 <Input
                                     id={`${id}-contrato`}
                                     name="nro_c"
@@ -177,7 +177,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                             <InputError message={errors['fecha_c']} />
                         </div>
                         <div className="*:not-first:mt-2">
-                            <Label htmlFor={`${id}-name`}>Nombre del Cliente</Label>
+                            <Label htmlFor={`${id}-name`}>Nombre del Cliente <span className='text-red-600'>*</span></Label>
                             <Input
                                 id={`${id}-name`}
                                 name="name_c"
@@ -198,7 +198,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                             return (
                                 <div key={index} className="flex gap-2">
                                     <div className="grow *:not-first:mt-2">
-                                        <Label htmlFor={`${id}-name-${index}`}>Nombre Trabajador</Label>
+                                        <Label htmlFor={`${id}-name-${index}`}>Nombre Trabajador <span className='text-red-600'>*</span></Label>
                                         <Input
                                             id={`${id}-name-${index}`}
                                             placeholder="Alberto Perez"
@@ -211,7 +211,7 @@ export function DialogEditFormClient({ postClient }: { postClient: PostData }) {
                                         <InputError message={errorWorkerName} />
                                     </div>
                                     <div className="w-32 *:not-first:mt-2">
-                                        <Label htmlFor={`${id}-ci-${index}`}>Nro.Identificación</Label>
+                                        <Label htmlFor={`${id}-ci-${index}`}>Nro.Identificación <span className='text-red-600'>*</span></Label>
                                         <Input
                                             id={`${id}-ci-${index}`}
                                             placeholder="#####..."

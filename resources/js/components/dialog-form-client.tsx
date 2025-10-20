@@ -101,7 +101,7 @@ export default function DialogFormCliente() {
     return (
         <Dialog open={openModal} onOpenChange={handleResetForm}>
             <DialogTrigger asChild>
-                <Button variant="default">Agregar Cliente</Button>
+                <Button className='cursor-pointer' variant="default">Agregar Cliente</Button>
             </DialogTrigger>
             <DialogContent className="lg:max-w-lg" onInteractOutside={(e)=>e.preventDefault()} onEscapeKeyDown={handleResetForm}>
                 <div className="flex flex-col items-center gap-2">
@@ -127,7 +127,7 @@ export default function DialogFormCliente() {
                     <div className="space-y-4">
                         <div className="flex gap-2">
                             <div className="*:not-first:mt-2">
-                                <Label htmlFor={`${id}-contrato`}>Nro. Contrato <span className='text-red-500'>*</span></Label>
+                                <Label htmlFor={`${id}-contrato`}>Nro. Contrato <span className='text-red-600'>*</span></Label>
                                 <Input id={`${id}-contrato`} name="nro_c" placeholder="####..." type="text" onChange={handleChange} value={nro_c} />
                                 <InputError message={errors['nro_c']} />
                             </div>
@@ -141,7 +141,7 @@ export default function DialogFormCliente() {
                             <InputError message={errors['fecha_c']} />
                         </div>
                         <div className="*:not-first:mt-2">
-                            <Label htmlFor={`${id}-name`}>Nombre del Cliente <span className='text-red-500'>*</span></Label>
+                            <Label htmlFor={`${id}-name`}>Nombre del Cliente <span className='text-red-600'>*</span></Label>
                             <Input id={`${id}-name`} name="name_c" placeholder="Alex TCP ..." type="text" onChange={handleChange} value={name_c} />
                             <InputError message={errors['name_c']} />
                         </div>
@@ -151,11 +151,11 @@ export default function DialogFormCliente() {
                         {workers.map((item, index) => {
                             const errorWorkerName = errors[`workers.${index}.name_w`];
                             const errorWorkerCi = errors[`workers.${index}.ci_w`];
-                            const isErrorWorker = errorWorkerName || errorWorkerCi ? true : false;
+                            // const isErrorWorker = errorWorkerName || errorWorkerCi ? true : false;
                             return (
                                 <div key={index} className="flex justify-center gap-2">
                                     <div className="grow *:not-first:mt-2">
-                                        <Label htmlFor={`${id}-name-${index}`}>Nombre Trabajador <span className='text-red-500'>*</span></Label>
+                                        <Label htmlFor={`${id}-name-${index}`}>Nombre Trabajador <span className='text-red-600'>*</span></Label>
                                         <Input
                                             id={`${id}-name-${index}`}
                                             placeholder="Alberto Perez ..."
@@ -168,7 +168,7 @@ export default function DialogFormCliente() {
                                         <InputError message={errorWorkerName} />
                                     </div>
                                     <div className="w-32 *:not-first:mt-2">
-                                        <Label htmlFor={`${id}-ci-${index}`}>Nro. Identidad <span className='text-red-500'>*</span></Label>
+                                        <Label htmlFor={`${id}-ci-${index}`}>Nro. Identidad <span className='text-red-600'>*</span></Label>
                                         <Input
                                             id={`${id}-ci-${index}`}
                                             placeholder="#####..."
@@ -180,7 +180,7 @@ export default function DialogFormCliente() {
                                         />
                                         <InputError message={errorWorkerCi} />
                                     </div>
-                                    <div className={!isErrorWorker ? 'self-end' : 'self-center'}>
+                                    <div className='mt-8'>
                                         <TooltipProvider delayDuration={0}>
                                             <Tooltip>
                                                 <TooltipTrigger asChild>

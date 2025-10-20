@@ -1,43 +1,74 @@
 import IndexPagination from '@/components/app-pagination';
 import CustomTable from '@/components/custom-table';
+import DialogFormCliente from '@/components/dialog-form-client';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Toaster } from '@/components/ui/sonner';
 import { ClientesTableConfig } from '@/config/tables/clientes-table';
+import { useAppearance } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import { DashboardProps, type BreadcrumbItem } from '@/types';
-import { Head, useForm } from '@inertiajs/react';
-import { useId, } from 'react';
-// import { Button } from '@/components/ui/button';
+import { Head, router, useForm } from '@inertiajs/react';
 import { SearchIcon } from 'lucide-react';
-import DialogFormCliente from '@/components/dialog-form-client';
-import { Toaster } from '@/components/ui/sonner';
+import { useId } from 'react';
 
-function ListClientes({ posts }: Omit<DashboardProps, 'filters'>) {
+function ListClientes({ ...props }: DashboardProps) {
     const idFilterTable = useId();
-    
-    const { data } = useForm({
-        valueSearchTable: '',
+    const valueAppearance = useAppearance().appearance;
+    const { posts, filters } = props;
+
+    const { data, setData } = useForm({
+        valueSearchTable: filters.search || '',
+        perPage: filters.perPage || '15',
     });
-    // console.log(posts.data);
+    // console.log();
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Dashboard',
             href: '/dashboard',
         },
-    ]; 
+    ];
 
     const onFilterTableChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(e.target.value);
+        const valueSearch = e.target.value;
+        if (valueSearch.startsWith(' ')) return;
+
+        setData('valueSearchTable', valueSearch);
+        const queryFilter = {
+            ...(valueSearch && { search: valueSearch }),
+            // ...(data.orderPost && data.orderPost !== 'default' && { orderPost: data.orderPost }),
+            ...(data.perPage && { perPage: data.perPage }),
+        };
+        /*Send Request to Controller */
+        router.get(route('admin.post.index'), queryFilter, {
+            preserveState: true,
+            preserveScroll: true,
+        });
     };
-    const handleSelectTable = () => {
-        console.log('first');
+    const handleSelectTable = (value: string) => {
+         setData('perPage', value);
+
+        const queryString = {
+            ...(data.valueSearchTable && { search : data.valueSearchTable}),
+            // ...(data.orderPost && data.orderPost !=='default' && { orderPost : data.orderPost}),
+            ...(value && { perPage: value}),
+        }
+        console.log(queryString)
+        /*Send Request to Controller */
+        router.get(
+            route('admin.post.index'),queryString,
+            {
+                preserveState: true,
+                preserveScroll: true,
+            },
+        );
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Clientes" />
-            <Toaster position='top-right' duration={2500} closeButton richColors/>
-            <div className="flex h-full flex-1 flex-col gap-2 overflow-x-auto rounded-xl p-4">
+            <Toaster position="top-right" duration={2000} richColors theme={valueAppearance} />
+            <div className="flex h-full flex-1 flex-col gap-3 overflow-x-auto rounded-xl p-4">
                 <header className="mb-2 flex flex-col items-start gap-4">
                     <h1 className="text-2xl font-bold">Listado de Clientes</h1>
                     <nav className="flex w-full items-center justify-between">
@@ -61,17 +92,11 @@ function ListClientes({ posts }: Omit<DashboardProps, 'filters'>) {
                                 </div>
                             </div>
                         </div>
-                        {/* <div className="flex justify-center py-4">
-                            <Calendar mode="single" defaultMonth={date} selected={date} onSelect={setDate} className="rounded-lg border shadow-sm" />
-                        </div> */}
-                        {/* <Link href={route('admin.post.create')}>
-                            <Button variant={'ghost'}>Agregar Cliente</Button>
-                        </Link> */}
                         <DialogFormCliente />
                     </nav>
                 </header>
-                <CustomTable posts_list={posts.data} columns={ClientesTableConfig.columns} actions={ClientesTableConfig.actions} />
-                <IndexPagination postsPag={posts} per_Page="6" onSelectChange={handleSelectTable} />
+                <CustomTable posts_list={posts.data} formIndex={posts.from} columns={ClientesTableConfig.columns} actions={ClientesTableConfig.actions} />
+                <IndexPagination postsPag={posts} per_Page={data.perPage} onSelectChange={handleSelectTable} />
             </div>
         </AppLayout>
     );
