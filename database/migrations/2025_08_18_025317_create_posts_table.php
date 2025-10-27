@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('nro_contract')->unique();
             $table->string('name_p')->unique();
+            $table->boolean('checked')->default(false);
             $table->date('date_contract')->nullable();
             $table->timestamps();
             // $table->foreignId('category_id')->constrained()->cascadeOnDelete();

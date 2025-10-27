@@ -14,15 +14,22 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('last_name');
+            $table->string('user_name')->unique();
+            // $table->string('email')->unique();
+            // $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('user_verified_at')->nullable();
+            $table->boolean('active')->default(true);
+            $table->enum('sucursal', ['pinar del rio', '5ta y 92', '3ra y 18', 'matanzas', 'varadero', 'cienfuegos', 'santa clara' ])->nullable();
+            $table->enum('role', ['admin', 'lector', 'editor', 'supervisor' ])->default('lector');
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            // $table->string('email')->primary();
+            $table->string('user_name')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });

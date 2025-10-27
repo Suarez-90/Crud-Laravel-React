@@ -9,9 +9,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
+import { Toaster } from '@/components/ui/sonner';
+import { useAppearance } from '@/hooks/use-appearance';
 
 type LoginForm = {
-    email: string;
+    user_name: string;
     password: string;
     remember: boolean;
 };
@@ -22,27 +24,44 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
-    const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
-        email: '',
+    const { data, setData, post, processing, errors, reset, clearErrors } = useForm<Required<LoginForm>>({
+        user_name: '',
         password: '',
         remember: false,
     });
+    const valueAppearance = useAppearance().appearance;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         post(route('login'), {
+            preserveScroll : true,
+            preserveState : true,
+            onSuccess: ()=> clearErrors(),
             onFinish: () => reset('password'),
         });
     };
 
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+        <AuthLayout title="Ingresar en tu cuenta" description="Introdusca el usuario y password para ingresar">
             <Head title="Log in" />
-
+            <Toaster position="top-right" duration={2000} richColors theme={valueAppearance} />
             <form className="flex flex-col gap-6" onSubmit={submit}>
                 <div className="grid gap-6">
                     <div className="grid gap-2">
-                        <Label htmlFor="email">Email address</Label>
+                        <Label htmlFor="user_name">Usuario</Label>
+                        <Input
+                            id="user_name"
+                            type="text"
+                            autoFocus
+                            disabled={processing}
+                            tabIndex={1}
+                            value={data.user_name}
+                            onChange={(e)=>setData('user_name', e.target.value)}
+                            // disabled
+                            placeholder="Usuario"
+                        />
+                        <InputError message={errors.user_name} className="" />
+                        {/* <Label htmlFor="email">Email address</Label>
                         <Input
                             id="email"
                             type="email"
@@ -54,7 +73,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             onChange={(e) => setData('email', e.target.value)}
                             placeholder="email@example.com"
                         />
-                        <InputError message={errors.email} />
+                        <InputError message={errors.email} /> */}
                     </div>
 
                     <div className="grid gap-2">
@@ -68,8 +87,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         </div>
                         <Input
                             id="password"
-                            type="password"
-                            required
+                            type="password"                            
                             tabIndex={2}
                             autoComplete="current-password"
                             value={data.password}
@@ -97,9 +115,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </div>
 
                 <div className="text-center text-sm text-muted-foreground">
-                    Don't have an account?{' '}
+                   No tienes una Cuenta?{' '}
                     <TextLink href={route('register')} tabIndex={5}>
-                        Sign up
+                        Register
                     </TextLink>
                 </div>
             </form>

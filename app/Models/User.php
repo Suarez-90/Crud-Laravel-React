@@ -19,13 +19,18 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        'last_name',
+        'user_name',
+        'active',
+        'sucursal',
+        'role',
+        // 'email',
         'password',
     ];
 
-    public function comments (){
-        return $this->hasMany(Comments::class);
-    }
+    // public function comments (){
+    //     return $this->hasMany(Comments::class);
+    // }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -45,7 +50,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            // 'email_verified_at' => 'datetime',
+            'user_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }

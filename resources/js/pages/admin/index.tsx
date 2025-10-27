@@ -7,8 +7,8 @@ import { Toaster } from '@/components/ui/sonner';
 import { ClientesTableConfig } from '@/config/tables/clientes-table';
 import { useAppearance } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
-import { DashboardProps, type BreadcrumbItem } from '@/types';
-import { Head, router, useForm } from '@inertiajs/react';
+import { DashboardProps, SharedData, type BreadcrumbItem } from '@/types';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { SearchIcon } from 'lucide-react';
 import { useId } from 'react';
 
@@ -16,6 +16,8 @@ function ListClientes({ ...props }: DashboardProps) {
     const idFilterTable = useId();
     const valueAppearance = useAppearance().appearance;
     const { posts, filters } = props;
+    const { auth } = usePage<SharedData>().props;
+    const isRoleRead = auth.user.role === 'supervisor';
 
     const { data, setData } = useForm({
         valueSearchTable: filters.search || '',
@@ -41,28 +43,24 @@ function ListClientes({ ...props }: DashboardProps) {
             ...(data.perPage && { perPage: data.perPage }),
         };
         /*Send Request to Controller */
-        router.get(route('admin.post.index'), queryFilter, {
+        router.get(route('gestion.post.index'), queryFilter, {
             preserveState: true,
             preserveScroll: true,
         });
     };
     const handleSelectTable = (value: string) => {
-         setData('perPage', value);
+        setData('perPage', value);
 
         const queryString = {
-            ...(data.valueSearchTable && { search : data.valueSearchTable}),
+            ...(data.valueSearchTable && { search: data.valueSearchTable }),
             // ...(data.orderPost && data.orderPost !=='default' && { orderPost : data.orderPost}),
-            ...(value && { perPage: value}),
-        }
-        console.log(queryString)
+            ...(value && { perPage: value }),
+        };
         /*Send Request to Controller */
-        router.get(
-            route('admin.post.index'),queryString,
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        router.get(route('gestion.post.index'), queryString, {
+            preserveState: true,
+            preserveScroll: true,
+        });
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -92,10 +90,15 @@ function ListClientes({ ...props }: DashboardProps) {
                                 </div>
                             </div>
                         </div>
-                        <DialogFormCliente />
+                        {!isRoleRead && <DialogFormCliente />}
                     </nav>
                 </header>
-                <CustomTable posts_list={posts.data} formIndex={posts.from} columns={ClientesTableConfig.columns} actions={ClientesTableConfig.actions} />
+                <CustomTable
+                    posts_list={posts.data}
+                    formIndex={posts.from}
+                    columns={ClientesTableConfig.columns}
+                    actions={ClientesTableConfig.actions}
+                />
                 <IndexPagination postsPag={posts} per_Page={data.perPage} onSelectChange={handleSelectTable} />
             </div>
         </AppLayout>

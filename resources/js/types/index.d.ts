@@ -36,7 +36,10 @@ export interface User {
     name: string;
     email: string;
     avatar?: string;
-    email_verified_at: string | null;
+    role:string;
+    user_name: string;
+    user_verified_at: string | null;
+    // email_verified_at: string | null;
     created_at: string;
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
@@ -52,6 +55,7 @@ export interface PostData {
     comments: CommentData[];
     nro_contract: string;
     name_p: string;
+    checked:boolean;
     date_contract: Date;
 }
 export interface CommentData {

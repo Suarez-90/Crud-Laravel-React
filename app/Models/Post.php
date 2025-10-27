@@ -12,7 +12,8 @@ class Post extends Model
     protected $fillable = [
         "nro_contract",
         "name_p",
-        "date_contract",        
+        "date_contract",
+        "checked"       
     ];
 
     public function category(){

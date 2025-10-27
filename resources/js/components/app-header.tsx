@@ -15,37 +15,6 @@ import { BookOpen, Folder, LayoutGrid, LayoutList, Menu, Search, Users } from 'l
 import AppLogo from './app-logo';
 import AppLogoIcon from './app-logo-icon';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Home',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Clientes',
-        href: '/admin/clientes',
-        icon: LayoutList,
-    },
-    {
-        title: 'Usuarios',
-        href: '/admin/usuarios',
-        icon: Users,
-    },
-];
-
-const rightNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
-
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
 
 interface AppHeaderProps {
@@ -54,9 +23,61 @@ interface AppHeaderProps {
 
 export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
     const page = usePage<SharedData>();
-    const activeStyleMenu = page.url.split('',10).join('')==='/dashboard'? page.url.split('',10).join('') : page.url.split('',15).join('')
+    const activeStyleMenu = page.url.split('', 10).join('') === '/dashboard' ? page.url.split('', 10).join('') : page.url.split('', 17).join('');
     const { auth } = page.props;
+    const user_role = auth.user.role;
     const getInitials = useInitials();
+
+    const mainNavItems: NavItem[] = user_role === 'admin' ? [
+        {
+            title: 'Home',
+            href: '/dashboard',
+            icon: LayoutGrid,
+        },
+        {   
+            title: 'Clientes',
+            href: '/gestion/clientes',
+            icon: LayoutList,
+        },
+        {
+            title: 'Usuarios',
+            href: '/getion/usuarios',
+            icon: Users,
+        },
+    ]: user_role !== 'lector'  ? [
+        {
+            title: 'Home',
+            href: '/dashboard',
+            icon: LayoutGrid,
+        },
+        {   
+            title: 'Clientes',
+            href: '/gestion/clientes',
+            icon: LayoutList,
+        },
+       
+    ]:[
+         {
+            title: 'Home',
+            href: '/dashboard',
+            icon: LayoutGrid,
+        },
+        
+    ];
+
+    const rightNavItems: NavItem[] = [
+        {
+            title: 'Repository',
+            href: 'https://github.com/laravel/react-starter-kit',
+            icon: Folder,
+        },
+        {
+            title: 'Documentation',
+            href: 'https://laravel.com/docs/starter-kits#react',
+            icon: BookOpen,
+        },
+    ];
+
     return (
         <>
             <div className="border-b border-sidebar-border/80">

@@ -26,7 +26,7 @@ function DialogListTrab({ name, listTrab, wButton }: DialogTrabProps) {
             <DialogTrigger asChild>
                 <Button variant="outline" className={`cursor-pointer gap-2 ${wButton} `}>
                     <ListCheckIcon />
-                    {`Trabajadores`}
+                    {`Ver Trabajadores`}
                     <span className={'-me-1 inline-flex h-5 max-h-full items-center rounded border bg-accent px-1 pt-0.5 font-[inherit] text-[0.625rem] font-medium text-foreground'}>
                         {listTrab.length}
                     </span>

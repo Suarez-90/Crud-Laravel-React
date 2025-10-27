@@ -17,8 +17,9 @@ class PostFactory extends Factory
     public function definition(): array
     {
         return [
-            'nro_contract' => rand(1,400),
-            'name_p' => fake()->name(),
+            'nro_contract' =>fake()->unique()->randomNumber(3, true),
+            'name_p' => fake()->unique()->name(),
+            'checked'=> $this->faker->boolean(),
             'date_contract' => fake()->date(),
         ];
     }

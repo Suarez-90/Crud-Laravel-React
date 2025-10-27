@@ -1,13 +1,13 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PostData } from '@/types';
-// import { Link } from '@inertiajs/react';
-import { EditIcon, Trash2 } from 'lucide-react';
-// import { Button } from './ui/button';
-import { useForm } from '@inertiajs/react';
+import { PostData, SharedData } from '@/types';
+import { useForm, usePage } from '@inertiajs/react';
+import { CheckCircle2Icon, EditIcon, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
+import CheckBoxClient from './custom-check-client';
 import DialogDeleteFormClient from './dialog-delete-from-client';
 import { DialogEditFormClient } from './dialog-edit-form-client';
 import DialogListTrab from './dialog-list-trab';
+import { Badge } from './ui/badge';
 
 interface ColumnsProp {
     key: string;
@@ -30,12 +30,12 @@ interface CustomTableProps {
 }
 
 function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
-    // const {posts} = usePage().props
     const { delete: destroy } = useForm();
-    // console.log(posts)
+    const { auth } = usePage<SharedData>().props;
+    const is_roleRead = auth.user.role === 'supervisor';
 
     const hanleRemoveRow = (post: PostData) => {
-        destroy(route('admin.post.destroy', { post: post.id }), {
+        destroy(route('gestion.post.destroy', { post: post.id }), {
             preserveScroll: true,
             // preserveState: true,
             onSuccess: () => {
@@ -69,11 +69,25 @@ function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
                                 <TableCell className="h-12 py-2">{post.name_p}</TableCell>
                                 <TableCell className="h-12 py-2">{new Date(post.date_contract).toLocaleDateString()}</TableCell>
                                 <TableCell className="h-12 py-2">
-                                    <DialogListTrab name={post.name_p} listTrab={post.comments} wButton=''/>
+                                    {post.checked ? <Badge className="gap-1" variant={'outline'}>
+                                        <CheckCircle2Icon className="text-emerald-500" size={8} aria-hidden="true" />
+                                        autorizado
+                                    </Badge> : 
+                                    <Badge className="gap-1 text-red-500" variant={'outline'}>
+                                        {/* <CheckCircle2Icon className="text-emerald-500" size={12} aria-hidden="true" /> */}
+                                        pendiente
+                                    </Badge> }
+                                    {/* <Badge className="gap-1">
+                                        <CheckCircle2Icon className="text-emerald-500" size={8} aria-hidden="true" />
+                                        autorizado
+                                    </Badge> */}
+                                </TableCell>
+                                <TableCell className="h-12 py-2">
+                                    <DialogListTrab name={post.name_p} listTrab={post.comments} wButton="" />
                                 </TableCell>
                                 <TableCell className="flex h-12 gap-2 py-2">
-                                    <DialogEditFormClient postClient={post} />
-                                    <DialogDeleteFormClient handleDeleteClick={() => hanleRemoveRow(post)} />
+                                    <DialogEditFormClient postClient={post} is_readOnly={is_roleRead} />
+                                    {is_roleRead ? <CheckBoxClient /> : <DialogDeleteFormClient handleDeleteClick={() => hanleRemoveRow(post)} />}
                                 </TableCell>
                             </TableRow>
                         ))

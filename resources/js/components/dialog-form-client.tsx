@@ -87,7 +87,7 @@ export default function DialogFormCliente() {
 
     const handleCreateSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        post(route('admin.post.store'), {
+        post(route('gestion.post.store'), {
             preserveScroll: true,
             preserveState:true,
             onSuccess : ()=>{

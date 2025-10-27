@@ -18,11 +18,11 @@ class CommentsFactory extends Factory
     public function definition(): array
     {
         return [
-            'name_c' => fake()->name(),
-            'nro_ident'=> $this->faker->randomNumber(),
+            'name_c' => fake()->unique()->name(),
+            'nro_ident'=> $this->faker->unique()->randomNumber(),
             // 'nro_ident'=> fake($this->faker->randomNumber()),
             // 'user_id' => ,
-            'post_id'=> rand(1, 12),
+            'post_id'=> rand(1, 25),
         ];
     }
 }

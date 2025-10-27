@@ -1,7 +1,8 @@
 import IndexFilters from '@/components/app-filters';
 import IndexPagination from '@/components/app-pagination';
 import CustomCard from '@/components/custom-card';
-// import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import { Toaster } from '@/components/ui/sonner';
+import { useAppearance } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import { DashboardProps, type BreadcrumbItem } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
@@ -21,6 +22,7 @@ export default function Dashboard({ ...props }: DashboardProps) {
         perPage: filters.perPage || '15',
         orderPost: filters.orderPost || 'default',
     });
+    const valueAppearance = useAppearance().appearance;
     // console.log(posts)
     const handleSelectChange = (value: string) => {
         setData('perPage', value);
@@ -77,6 +79,7 @@ export default function Dashboard({ ...props }: DashboardProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
+            <Toaster position="top-right" duration={2000} richColors theme={valueAppearance} />
             <div className="flex h-full flex-1 flex-col gap-5 overflow-x-auto rounded-xl p-4">
                 <IndexFilters
                     valuePost={data.searchPost}

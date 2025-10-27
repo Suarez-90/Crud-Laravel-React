@@ -35,7 +35,7 @@ function CustomCard({ nro_c, name_c, date_c, commts_post }: CardProps) {
                     </Badge>
                 </CardDescription>
                 <CardTitle className="text-3xl tabular-nums">{nro_c}</CardTitle>
-                <CardDescription className="col-span-2 text-lg font-semibold">{name_c}</CardDescription>
+                <CardDescription className="col-span-2 text-md font-medium">{name_c}</CardDescription>
             </CardHeader>
             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 {/* <span className="relative z-10 bg-card px-2 font-semibold">Trabajadores</span> */}
