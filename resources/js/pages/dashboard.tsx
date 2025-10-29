@@ -88,7 +88,7 @@ export default function Dashboard({ ...props }: DashboardProps) {
                     onSelectFilterChange={handleSelectFilterChange}
                 />
 
-                <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-4">
                     {posts.data.map((post) => {
                         return (
                             <CustomCard

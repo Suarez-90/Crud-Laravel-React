@@ -33,6 +33,7 @@ function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
     const { delete: destroy } = useForm();
     const { auth } = usePage<SharedData>().props;
     const is_roleRead = auth.user.role === 'supervisor';
+    const is_roleAdmin = auth.user.role === 'admin';
 
     const hanleRemoveRow = (post: PostData) => {
         destroy(route('gestion.post.destroy', { post: post.id }), {
@@ -88,6 +89,7 @@ function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
                                 <TableCell className="flex h-12 gap-2 py-2">
                                     <DialogEditFormClient postClient={post} is_readOnly={is_roleRead} />
                                     {is_roleRead ? <CheckBoxClient /> : <DialogDeleteFormClient handleDeleteClick={() => hanleRemoveRow(post)} />}
+                                    {is_roleAdmin && <CheckBoxClient/>}
                                 </TableCell>
                             </TableRow>
                         ))

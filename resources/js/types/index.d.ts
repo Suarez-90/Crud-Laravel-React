@@ -34,10 +34,12 @@ export interface SharedData {
 export interface User {
     id: number;
     name: string;
+    last_name: string;
     email: string;
     avatar?: string;
     role:string;
     user_name: string;
+    sucursal: string;
     user_verified_at: string | null;
     // email_verified_at: string | null;
     created_at: string;
@@ -79,6 +81,21 @@ export interface PaginationProps {
     to: number;
     total: number;
 }
+export interface PaginationPropsUsers {
+    current_page: number;
+    data: User[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: LinksProps[];
+    next_page_url: string;
+    path: string;
+    per_page: number;
+    prev_page_url: string;
+    to: number;
+    total: number;
+}
 type FiltersProps = {
     search:string
     perPage: string;
@@ -86,5 +103,9 @@ type FiltersProps = {
 }
 export interface DashboardProps {
     posts: PaginationProps;    
+    filters: FiltersProps;
+}
+export interface UsersListProps {
+    users: PaginationPropsUsers;    
     filters: FiltersProps;
 }

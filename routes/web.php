@@ -3,6 +3,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserGestionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -21,9 +22,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/clientes',[PostController::class, 'store'])->name('post.store');
             Route::put('/clientes/{post}',[PostController::class, 'update'])->name('post.update');
             Route::delete('/clientes/post/{post}',[PostController::class, 'destroy'])->name('post.destroy');
-            // Route::delete('/clientes/post{post}/comments/{comment}',[PostController::class, 'destroyComment'])->name('postcomment.destroy');
-    
+            
             Route::resource('comments', CommentsController::class)->except(['show', 'edit']);
+            Route::resource('/usuarios', UserGestionController::class)->except(['create','show', 'edit']);
         });
     });
 

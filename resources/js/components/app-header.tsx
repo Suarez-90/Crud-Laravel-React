@@ -30,7 +30,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
     const mainNavItems: NavItem[] = user_role === 'admin' ? [
         {
-            title: 'Home',
+            title: 'Dashboard',
             href: '/dashboard',
             icon: LayoutGrid,
         },
@@ -41,7 +41,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
         },
         {
             title: 'Usuarios',
-            href: '/getion/usuarios',
+            href: '/gestion/usuarios',
             icon: Users,
         },
     ]: user_role !== 'lector'  ? [

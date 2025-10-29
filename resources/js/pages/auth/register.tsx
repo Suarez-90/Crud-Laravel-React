@@ -29,8 +29,7 @@ export default function Register() {
         name: '',
         last_name: '',
         user_name: '',
-        sucursal: '',
-        // email: '',
+        sucursal: '',        
         password: '',
         password_confirmation: '',
     });

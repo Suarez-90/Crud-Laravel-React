@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
 import { Toaster } from '@/components/ui/sonner';
 import { useAppearance } from '@/hooks/use-appearance';
+import { toast } from 'sonner';
 
 type LoginForm = {
     user_name: string;
@@ -36,8 +37,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         post(route('login'), {
             preserveScroll : true,
             preserveState : true,
-            onSuccess: ()=> clearErrors(),
+            onSuccess: ()=> {
+                clearErrors();
+                toast.success('Bienvenido al Sistema !!');
+            },            
             onFinish: () => reset('password'),
+            onError: (errors) => {
+                toast.error(errors.error || 'Error Ingresando al Sistema');
+            },
         });
     };
 

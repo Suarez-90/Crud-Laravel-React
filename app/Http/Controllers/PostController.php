@@ -9,7 +9,6 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-use function Laravel\Prompts\pause;
 use function Pest\Laravel\get;
 use function Pest\Laravel\post;
 
@@ -20,10 +19,10 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {   
-        $postsQuery = Post::with(['comments']);      
+        $postsQuery = Post::with(['comments']);
         
         if ($request->filled('search')  ) {
-            $searchFilter = $request->search;       
+            $searchFilter = $request->search;
 
             $postsQuery->where(function($query) use($searchFilter){
                 $query->where('nro_contract', 'like', "%{$searchFilter}%")
