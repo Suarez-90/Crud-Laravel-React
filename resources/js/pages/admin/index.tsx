@@ -27,8 +27,8 @@ function ListClientes({ ...props }: DashboardProps) {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Dashboard',
-            href: '/dashboard',
+            title: 'Clientes',
+            href: '/clientes',
         },
     ];
 

@@ -21,6 +21,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/clientes',[PostController::class, 'indexList'])->name('post.index');
             Route::post('/clientes',[PostController::class, 'store'])->name('post.store');
             Route::put('/clientes/{post}',[PostController::class, 'update'])->name('post.update');
+            Route::put('/clientes/check/{post}',[PostController::class, 'updateCheck'])->name('post.update-check');
             Route::delete('/clientes/post/{post}',[PostController::class, 'destroy'])->name('post.destroy');
             
             Route::resource('comments', CommentsController::class)->except(['show', 'edit']);

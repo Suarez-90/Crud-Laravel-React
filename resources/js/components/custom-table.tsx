@@ -1,13 +1,13 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PostData, SharedData } from '@/types';
 import { useForm, usePage } from '@inertiajs/react';
-import { CheckCircle2Icon, EditIcon, Trash2 } from 'lucide-react';
-import { toast } from 'sonner';
-import CheckBoxClient from './custom-check-client';
-import DialogDeleteFormClient from './dialog-delete-from-client';
+import { CheckCircle2Icon, EditIcon, Trash2, XCircleIcon } from 'lucide-react';
+import DialogConfirmClient from './dialog-confirmation-client';
 import { DialogEditFormClient } from './dialog-edit-form-client';
 import DialogListTrab from './dialog-list-trab';
 import { Badge } from './ui/badge';
+import { toast } from 'sonner';
+import DialogDeleteFormClient from './dialog-delete-from-client';
 
 interface ColumnsProp {
     key: string;
@@ -30,12 +30,27 @@ interface CustomTableProps {
 }
 
 function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
-    const { delete: destroy } = useForm();
+    const { put, delete:destroy } = useForm();
+    // const [checked, setChecked] = useState<boolean>(false);
     const { auth } = usePage<SharedData>().props;
     const is_roleRead = auth.user.role === 'supervisor';
+    const is_roleEditor = auth.user.role === 'editor';
     const is_roleAdmin = auth.user.role === 'admin';
 
-    const hanleRemoveRow = (post: PostData) => {
+    const handleConfirmation = (postClient: PostData) => {
+         put(route('gestion.post.update-check',  {post:postClient.id}), {
+            preserveScroll: true,
+            // preserveUrl:true,
+            onSuccess: () => {
+                toast.success('Datos del Cliente Actualizados Correctamente');
+            },
+            onError: (errors) => {
+                toast.error(errors.error || 'Error Actualizados los Datos del Cliente');
+            },
+        });
+    };
+
+    const handleRemoveRow = (post: PostData) => {
         destroy(route('gestion.post.destroy', { post: post.id }), {
             preserveScroll: true,
             // preserveState: true,
@@ -70,14 +85,17 @@ function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
                                 <TableCell className="h-12 py-2">{post.name_p}</TableCell>
                                 <TableCell className="h-12 py-2">{new Date(post.date_contract).toLocaleDateString()}</TableCell>
                                 <TableCell className="h-12 py-2">
-                                    {post.checked ? <Badge className="gap-1" variant={'outline'}>
-                                        <CheckCircle2Icon className="text-emerald-500" size={8} aria-hidden="true" />
-                                        autorizado
-                                    </Badge> : 
-                                    <Badge className="gap-1 text-red-500" variant={'outline'}>
-                                        {/* <CheckCircle2Icon className="text-emerald-500" size={12} aria-hidden="true" /> */}
-                                        pendiente
-                                    </Badge> }
+                                    {post.checked ? (
+                                        <Badge className="gap-1 text-emerald-600" variant={'outline'}>
+                                            <CheckCircle2Icon className="text-emerald-500" size={8} aria-hidden="true" />
+                                            autorizado
+                                        </Badge>
+                                    ) : (
+                                        <Badge className="gap-1 text-red-500" variant={'outline'}>
+                                            <XCircleIcon className="text-red-500" size={8} aria-hidden="true" />
+                                            pendiente
+                                        </Badge>
+                                    )}
                                     {/* <Badge className="gap-1">
                                         <CheckCircle2Icon className="text-emerald-500" size={8} aria-hidden="true" />
                                         autorizado
@@ -88,8 +106,8 @@ function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
                                 </TableCell>
                                 <TableCell className="flex h-12 gap-2 py-2">
                                     <DialogEditFormClient postClient={post} is_readOnly={is_roleRead} />
-                                    {is_roleRead ? <CheckBoxClient /> : <DialogDeleteFormClient handleDeleteClick={() => hanleRemoveRow(post)} />}
-                                    {is_roleAdmin && <CheckBoxClient/>}
+                                    {(is_roleAdmin || is_roleEditor) && <DialogDeleteFormClient handleDeleteClick={() => handleRemoveRow(post)} />}
+                                    {(is_roleAdmin || is_roleRead) && <DialogConfirmClient handleConfirmClick={() => handleConfirmation(post)} isChecked={post.checked} contrato={post.nro_contract}/>}
                                 </TableCell>
                             </TableRow>
                         ))

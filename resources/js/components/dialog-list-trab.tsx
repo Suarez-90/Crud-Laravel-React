@@ -10,7 +10,7 @@ import {
     DialogTrigger,
 } from '@/components/ui/dialog';
 import { CommentData } from '@/types';
-import { HandshakeIcon, ListCheckIcon, UserCheck } from 'lucide-react';
+import { HandshakeIcon, IdCardIcon, ListCheckIcon, UserCheck } from 'lucide-react';
 import { Separator } from './ui/separator';
 
 interface DialogTrabProps {
@@ -24,7 +24,7 @@ function DialogListTrab({ name, listTrab, wButton }: DialogTrabProps) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline" className={`cursor-pointer gap-2 ${wButton} `}>
+                <Button variant="outline" className={`cursor-pointer gap-2 ${wButton}`}>
                     <ListCheckIcon />
                     {`Ver Trabajadores`}
                     <span className={'-me-1 inline-flex h-5 max-h-full items-center rounded border bg-accent px-1 pt-0.5 font-[inherit] text-[0.625rem] font-medium text-foreground'}>
@@ -57,8 +57,8 @@ function DialogListTrab({ name, listTrab, wButton }: DialogTrabProps) {
                                                         <UserCheck size={18}/>
                                                         <strong className="">{item.name_c}</strong>
                                                     </p>
-                                                    <p>
-                                                        
+                                                    <p className='flex gap-2 items-center'>
+                                                        <IdCardIcon size={18}/>
                                                         {item.nro_ident}
                                                     </p>
                                                 </div>

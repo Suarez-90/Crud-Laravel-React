@@ -144,9 +144,8 @@ class PostController extends Controller
      ** @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdatePostRequest $request, Post $post)
-    {
-        
-        // dd( $request->validated('workers')[0], $request->workers[0]);
+    {        
+        // dd( $request->all());
         
         if ($post) {            
             $fc = substr($request->validated('fecha_c'), '0', '10');
@@ -184,10 +183,19 @@ class PostController extends Controller
                     }           
                 };
             }
-        };       
+        };  
         return redirect()->back()->with('success', 'Cliente actualizado correctamente');
 
         // return to_route('admin.post.index')->with('success', 'Cliente actualizado correctamente');       
+    }
+     public function updateCheck( Post $post)
+     {
+        if ($post) {
+            $updateChecked = $post->checked;
+            $post->update([$post->checked = !$updateChecked]);
+        }
+
+        return redirect()->back()->with('success', 'Cliente actualizado correctamente');
     }
 
     /**

@@ -27,8 +27,8 @@ function ListUsers({ ...props }: UsersListProps) {
 
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'Dashboard',
-            href: '/dashboard',
+            title: 'Usuarios',
+            href: '/usuarios',
         },
     ];
 
