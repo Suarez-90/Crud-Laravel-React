@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Register\RegisterUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UserGestionController extends Controller
@@ -13,7 +15,7 @@ class UserGestionController extends Controller
      */
     public function index(Request $request)
     {   
-        $userQuery = User::latest();
+        $userQuery = User::query();
 
         if ($request->filled('search')  ) {
             $searchFilter = $request->search;       
@@ -28,7 +30,7 @@ class UserGestionController extends Controller
         $paginationPage = (int) $request->perPage;
         $perPage = $paginationPage==0 ? 15 : $paginationPage;
 
-        $users = $userQuery->paginate($perPage)->withQueryString();
+        $users = $userQuery->orderBy('role')->paginate($perPage)->withQueryString();
         return Inertia::render('admin/index-users', [
             'users'=> $users,
             "filters"=>$request->only(['search', 'perPage'])        
@@ -46,9 +48,21 @@ class UserGestionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(RegisterUserRequest $request)
     {
-        //
+        
+        User::create([
+            'name' => $request->validated('name'),
+            'last_name' => $request->validated('last_name'),
+            'user_name' => $request->validated('user_name'),
+            'sucursal' => $request->validated('sucursal'),
+            'active' => true,
+            'role' => $request->role,
+            // 'email' => $request->email,
+            'password' => Hash::make($request->validated('password')),
+        ]);
+
+        return redirect()->back()->with('success', 'Usuario creado correctamente');
     }
 
     /**
@@ -78,8 +92,10 @@ class UserGestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
-    {
-        dd($user);
+    public function destroy(User $usuario)
+    {   
+        $usuario->delete();   
+        
+        return redirect()->back()->with('success', 'Usuario eliminado correctamente');
     }
 }

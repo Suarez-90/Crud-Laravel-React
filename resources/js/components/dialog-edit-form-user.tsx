@@ -11,97 +11,58 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PostData } from '@/types';
+import { User } from '@/types';
 import { useForm } from '@inertiajs/react';
-import { EditIcon, ScanEyeIcon } from 'lucide-react';
-import { ChangeEvent, FormEvent, useId, useState } from 'react';
+import { EditIcon, LoaderCircle, ScanEyeIcon, UserPenIcon } from 'lucide-react';
+import { FormEvent, useId, useState } from 'react';
 import { toast } from 'sonner';
-import InputDateCliente from './calendar-form-client';
 import InputError from './input-error';
+import { useLettersUser } from '@/hooks/use-letter-user';
+import { ComboBoxSuc } from './select-box';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from './ui/select';
 
-interface DialogEditData {
-    is_readOnly : boolean,
-    postClient : PostData
+interface DialogEditUser {
+    // is_readOnly : boolean,
+    userData : User
 }
 
-export function DialogEditFormUser({ is_readOnly, postClient }: DialogEditData) {
-    const [open, setOpen] = useState(false);
+export function DialogEditFormUser({ userData }: DialogEditUser) {
     const [openDialog, setOpenDialog] = useState(false);
     const id = useId();
+    const getInitials = useLettersUser();
     
-    const { name_p, nro_contract, date_contract, comments } = postClient;
+    const { name,last_name,user_name,sucursal, role, } = userData;
 
-    const initialComments = comments.map((item) => {
-        return {
-            id: item.id || null,
-            name_w: item.name_c,
-            ci_w: item.nro_ident,
-        };
+    const { data, setData, put, processing, errors, reset, clearErrors } = useForm({
+        name: name,
+        last_name: last_name,
+        user_name: user_name,
+        sucursal: sucursal,
+        role: role,
+        // password: '',
+        // password_confirmation: '',
     });
 
-    const { data, setData, errors, put, clearErrors, processing, reset } = useForm({
-        nro_c: nro_contract,
-        name_c: name_p,
-        fecha_c: new Date(date_contract),
-        workers: initialComments,
-    });
-    // const initialData = useRef(data)
-
-    const onChangeDate = (date: Date | undefined) => {
-        if (date !== undefined) {
-            setData('fecha_c', date);
-        }
-        setOpen(false);
-    };
-    const handleAddWorker = () => {
-        const newWorker = { id: null, name_w: '', ci_w: '' };
-        const addWorker = [...data.workers, newWorker];
-        setData('workers', addWorker);
-    };
-
-    const handleRemoveWorker = (item: { id: number | null; name_w: string; ci_w: string }, i: number) => {
-        const newList = data.workers.filter((_, index) => index !== i);
-        console.log(postClient.id, '-', item, ' Nuevo');
-        setData('workers', newList);
-    };
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>, i = -1) => {
-        const name_inpt = e.target.name;
-        const value_inpt = e.target.value;
-        if (name_inpt === 'nro_c' && value_inpt !== ' ') return setData('nro_c', value_inpt);
-        if (name_inpt === 'name_c' && value_inpt !== ' ') return setData('name_c', value_inpt);
-
-        const newWorker = [...data.workers];
-
-        if (name_inpt === `workers.${i}.name_w` && value_inpt !== ' ') {
-            newWorker[i].name_w = value_inpt;
-            return setData('workers', newWorker);
-        }
-        if (name_inpt === `workers.${i}.ci_w` && value_inpt !== ' ') {
-            newWorker[i].ci_w = value_inpt;
-            return setData('workers', newWorker);
-        }
-    };
-    const handleResetForm = () => {
+    const handleResetFormUser = () => {
         const newState = !openDialog;
         if (newState == false) {
-            reset('nro_c', 'name_c');
-            setData('workers', initialComments);
-            // setData('workers', [{
-            //     name_w: '',
-            //     ci_w: '',
-            // }]);
+            reset();            
             clearErrors();
         }
         setOpenDialog(newState);
     };
+    const onHandleBlur = () => {       
+        const userName = getInitials(data.name, data.last_name);
+        setData('user_name', userName);
+    };
+
     const handleEditSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         put(route('gestion.post.update', postClient.id), {
             preserveScroll: true,
             // preserveUrl:true,
             onSuccess: () => {
-                handleResetForm();
+                handleResetFormUser();
                 toast.success('Cliente Actualizado Correctamente');
             },
             onError: (errors) => {
@@ -111,13 +72,13 @@ export function DialogEditFormUser({ is_readOnly, postClient }: DialogEditData) 
     };
 
     return (
-        <Dialog open={openDialog} onOpenChange={handleResetForm}>
+        <Dialog open={openDialog} onOpenChange={handleResetFormUser}>
             <DialogTrigger asChild>
                 <Button
                     variant={'default'}
                     className="h-8 w-8 cursor-pointer bg-blue-500 transition-transform hover:scale-110 hover:bg-blue-600 hover:opacity-80"
                 >
-                    {is_readOnly ? <ScanEyeIcon color="white" className="h-4 w-4" /> : <EditIcon color="white" className="h-4 w-4" />}
+                    <EditIcon color="white" className="h-4 w-4" />
                 </Button>
             </DialogTrigger>
             <DialogContent
@@ -127,87 +88,121 @@ export function DialogEditFormUser({ is_readOnly, postClient }: DialogEditData) 
             >
                 <div className="flex flex-col items-center gap-2">
                     <div className="flex size-11 shrink-0 items-center justify-center rounded-full border" aria-hidden="true">
-                        <svg
-                            className="stroke-zinc-800 dark:stroke-zinc-100"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 32 32"
-                            aria-hidden="true"
-                        >
-                            <circle cx="16" cy="16" r="12" fill="none" strokeWidth="8" />
-                        </svg>
+                        <UserPenIcon size={32}/>
                     </div>
                     <DialogHeader>
-                        <DialogTitle className="sm:text-center">{`${is_readOnly ? 'Visualizar' : 'Actualizar'} Datos del Cliente`}</DialogTitle>
+                        <DialogTitle className="sm:text-center">Actualizar Datos del Usuario</DialogTitle>
                         <DialogDescription className="sm:text-center">
-                            {`${is_readOnly ? 'Mostrando los' : 'Introduzca los nuevos'} datos del Cliente`}{' '}
+                            Introduzca los nuevos datos del Usuario
                         </DialogDescription>
                     </DialogHeader>
                 </div>
-
                 <form onSubmit={handleEditSubmit} className="space-y-5 pt-4">
-                    <div className="space-y-4">
-                        <div className="flex gap-2">
-                            <div className="*:not-first:mt-2">
-                                <Label htmlFor={`${id}-contrato`}>
-                                    Nro. Contrato <span className="text-red-600">*</span>
-                                </Label>
-                                <Input
-                                    id={`${id}-contrato`}
-                                    name="nro_c"
-                                    placeholder="####..."
-                                    onChange={handleChange}
-                                    type="text"
-                                    readOnly={is_readOnly}
-                                    disabled={processing}
-                                    value={data.nro_c}
-                                />
-                                <InputError message={errors['nro_c']} />
-                            </div>
-                            <InputDateCliente
-                                selected={data.fecha_c}
-                                onSelect={onChangeDate}
-                                isOpen={open}
-                                disable={is_readOnly || processing}
-                                onOpenChange={setOpen}
-                                placeholder="Seleccione la fecha"
-                            />
-                            <InputError message={errors['fecha_c']} />
-                        </div>
-                        <div className="*:not-first:mt-2">
-                            <Label htmlFor={`${id}-name`}>
-                                Nombre del Cliente <span className="text-red-600">*</span>
-                            </Label>
+                    <div className="grid gap-6">
+                        <div className="grid gap-2">
+                            <Label htmlFor={id + '-name'}>Nombre/s</Label>
                             <Input
-                                id={`${id}-name`}
-                                name="name_c"
-                                placeholder="Alex TCP ..."
+                                id={id + '-name'}
                                 type="text"
-                                readOnly={is_readOnly}
+                                autoFocus
+                                tabIndex={1}
+                                onBlur={onHandleBlur}
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
                                 disabled={processing}
-                                onChange={handleChange}
-                                value={data.name_c}
+                                placeholder="Nombre/s"
                             />
-                            <InputError message={errors['name_c']} />
+                            <InputError message={errors.name} />
                         </div>
-                        <div className="flex items-center gap-3 before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
-                            <span className="text-xs text-muted-foreground">Trabajador/es</span>
-                        </div>                        
-                    </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor={id + '-last_name'}>Apellidos</Label>
+                            <Input
+                                id={id + '-last_name'}
+                                type="text"
+                                tabIndex={2}
+                                onBlur={onHandleBlur}
+                                value={data.last_name}
+                                onChange={(e) => setData('last_name', e.target.value)}
+                                disabled={processing}
+                                placeholder="Apellidos"
+                            />
+                            <InputError message={errors.last_name} />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor={id + '-user_name'}>Usuario</Label>
+                            <Input
+                                id={id + '-user_name'}
+                                type="text"
+                                className="text-muted-foreground"
+                                tabIndex={3}
+                                value={data.user_name}
+                                // disabled
+                                readOnly
+                                placeholder="No definido"
+                            />
+                            <InputError message={errors.user_name} />
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                            <ComboBoxSuc handleSelect={(val)=>setData('sucursal',val)} valueCombox={sucursal}/>
+                            <Select onValueChange={(value)=>setData('role',value)} value={data.role} disabled={processing}>
+                                <SelectTrigger tabIndex={5} className="w-full col-start-3">
+                                    <SelectValue placeholder="Seleccione el Role" />
+                                </SelectTrigger>
+                                <SelectContent >
+                                    <SelectGroup>
+                                        <SelectLabel>Roles</SelectLabel>
+                                        <SelectItem value="lector">Lector</SelectItem>
+                                        <SelectItem value="editor">Editor</SelectItem>
+                                        <SelectItem value="supervisor">Supervisor</SelectItem>
+                                        <SelectItem value="admin">Administrador</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>                          
+                            <InputError message={errors.sucursal} />
+                        </div>
+                        {/* <div className="grid gap-2">
+                            <Label htmlFor="password">Password</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                tabIndex={6}
+                                autoComplete="new-password"
+                                value={data.password}
+                                onChange={(e) => setData('password', e.target.value)}
+                                disabled={processing}
+                                placeholder="Password"
+                            />
+                            <InputError message={errors.password} />
+                        </div>
+
+                        <div className="grid gap-2">
+                            <Label htmlFor="password_confirmation">Confirm password</Label>
+                            <Input
+                                id="password_confirmation"
+                                type="password"
+                                tabIndex={7}
+                                autoComplete="new-password"
+                                value={data.password_confirmation}
+                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                                disabled={processing}
+                                placeholder="Confirm password"
+                            />
+                            <InputError message={errors.password_confirmation} />
+                        </div>                         */}
+                    </div>                               
                     <DialogFooter className="border-t px-6 py-4">
                         <DialogClose asChild>
-                            <Button type="button" className="cursor-pointer" variant="outline" onClick={handleResetForm}>
+                            <Button tabIndex={9} type="button" className="cursor-pointer" variant="outline" onClick={handleResetFormUser}>
                                 Cancel
                             </Button>
                         </DialogClose>
-                        {!is_readOnly && (
-                            <Button type="submit" disabled={processing} className="cursor-pointer">
-                                {processing ? 'Actualizando' : 'Actualizar'} Datos
-                            </Button>
-                        )}
+                        <Button tabIndex={8} type="submit" className="cursor-pointer">
+                            {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                            {processing ? 'Actualizando' : 'Actualizar'} Usuario
+                        </Button>
                     </DialogFooter>
                 </form>
+
             </DialogContent>
         </Dialog>
     );

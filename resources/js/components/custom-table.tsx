@@ -51,6 +51,7 @@ function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
     };
 
     const handleRemoveRow = (post: PostData) => {
+        console.log(post)
         destroy(route('gestion.post.destroy', { post: post.id }), {
             preserveScroll: true,
             // preserveState: true,
@@ -62,7 +63,6 @@ function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
             },
         });
     };
-    // console.log(dataPage)
     return (
         <div className="overflow-hidden rounded-md border bg-background">
             <Table>
@@ -95,11 +95,7 @@ function CustomTable({ posts_list, formIndex, columns }: CustomTableProps) {
                                             <XCircleIcon className="text-red-500" size={8} aria-hidden="true" />
                                             pendiente
                                         </Badge>
-                                    )}
-                                    {/* <Badge className="gap-1">
-                                        <CheckCircle2Icon className="text-emerald-500" size={8} aria-hidden="true" />
-                                        autorizado
-                                    </Badge> */}
+                                    )}                                    
                                 </TableCell>
                                 <TableCell className="h-12 py-2">
                                     <DialogListTrab name={post.name_p} listTrab={post.comments} wButton="" />

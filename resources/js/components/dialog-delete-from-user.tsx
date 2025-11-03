@@ -12,11 +12,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { OctagonAlert, Trash2, } from 'lucide-react';
 
-interface DeleteProp {
+interface DeletePropUser {
     handleDeleteClick : ()=>void
 }
 
-export default function DialogDeleteFormClient({handleDeleteClick}:DeleteProp) { 
+export default function DialogDeleteFormUser({handleDeleteClick}:DeletePropUser) { 
 
     return (
         <AlertDialog>
@@ -26,16 +26,13 @@ export default function DialogDeleteFormClient({handleDeleteClick}:DeleteProp) {
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent onEscapeKeyDown={(e) => e.preventDefault()}>
-                {/* <div className="flex flex-col items-center gap-2"> */}
                     <AlertDialogHeader>
-                        {/* <div className="flex size-12 items-center justify-center rounded-full border"> */}
                             
                             <AlertDialogTitle className='flex gap-3 text-xl'>
                                 <OctagonAlert color="red" className="opacity-80" size={32} />
                                 Seguro que desea eliminar?</AlertDialogTitle>
-                        {/* </div> */}
                         <AlertDialogDescription className='text-md'>
-                            Esta operación <span className='text-red-500 font-semibold'>eliminará</span> el Cliente con sus Trabajadores !
+                            Esta operación <span className='text-red-500 font-semibold'>eliminará</span> el Usuario seleccionado !
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                 {/* </div> */}

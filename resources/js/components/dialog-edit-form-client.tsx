@@ -87,11 +87,7 @@ export function DialogEditFormClient({ is_readOnly, postClient }: DialogEditData
         const newState = !openDialog;
         if (newState == false) {
             reset('nro_c', 'name_c');
-            setData('workers', initialComments);
-            // setData('workers', [{
-            //     name_w: '',
-            //     ci_w: '',
-            // }]);
+            setData('workers', initialComments);            
             clearErrors();
         }
         setOpenDialog(newState);

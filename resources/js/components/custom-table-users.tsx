@@ -1,10 +1,10 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { SharedData, User } from '@/types';
-import { useForm, usePage } from '@inertiajs/react';
+import { User } from '@/types';
+import { useForm } from '@inertiajs/react';
 import { EditIcon, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import DialogDeleteFormClient from './dialog-delete-from-client';
-import { DialogEditFormClient } from './dialog-edit-form-client';
+import DialogDeleteFormUser from './dialog-delete-from-user';
+import { DialogEditFormUser } from './dialog-edit-form-user';
 
 interface ColumnsPropUser {
     key: string;
@@ -28,13 +28,14 @@ interface CustomTableProps {
 
 function CustomTableUsers({ users_list, formIndex, columns }: CustomTableProps) {
     const { delete: destroy } = useForm();
-    const { auth } = usePage<SharedData>().props;
-    const is_roleRead = auth.user.role === 'supervisor';
+    // const { auth } = usePage<SharedData>().props;
+    // const is_roleRead = auth.user.role === 'supervisor';
 
-    const hanleRemoveRow = (user: User) => {
-        destroy(route('gestion.post.destroy', { user: user.id }), {
+    const hanleRemoveRowUser = (user: User) => {
+        console.log(user);
+        destroy(route('gestion.usuarios.destroy', { usuario: user }), {
             preserveScroll: true,
-            // preserveState: true,
+            preserveState: true,
             onSuccess: () => {
                 toast.success('Cliente Eliminado Correctamente');
             },
@@ -67,11 +68,10 @@ function CustomTableUsers({ users_list, formIndex, columns }: CustomTableProps) 
                                 <TableCell className="h-12 py-2">{user.user_name}</TableCell>
                                 <TableCell className="h-12 py-2">{user.sucursal}</TableCell>
                                 <TableCell className="h-12 py-2">{user.role}</TableCell>
-                                {/* <TableCell className="h-12 py-2">{new Date(post.date_contract).toLocaleDateString()}</TableCell> */}
-                                {/* <TableCell className="flex h-12 gap-2 py-2">
-                                    <DialogEditFormClient postClient={user} is_readOnly={is_roleRead} />
-                                    <DialogDeleteFormClient handleDeleteClick={() => hanleRemoveRow(user)} />
-                                </TableCell> */}
+                                <TableCell className="flex h-12 gap-2 py-2">
+                                    <DialogEditFormUser userData={user} />
+                                    <DialogDeleteFormUser handleDeleteClick={() => hanleRemoveRowUser(user)} />
+                                </TableCell>
                             </TableRow>
                         ))
                     ) : (

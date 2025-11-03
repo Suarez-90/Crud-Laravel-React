@@ -1,6 +1,7 @@
 import IndexFilters from '@/components/app-filters';
 import IndexPagination from '@/components/app-pagination';
 import CustomCard from '@/components/custom-card';
+import CustomCardEmpty from '@/components/custom-card-empty';
 import { Toaster } from '@/components/ui/sonner';
 import { useAppearance } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
@@ -28,34 +29,28 @@ export default function Dashboard({ ...props }: DashboardProps) {
         setData('perPage', value);
 
         const queryString = {
-            ...(data.searchPost && { search : data.searchPost}),
-            ...(data.orderPost && data.orderPost !=='default' && { orderPost : data.orderPost}),
-            ...(value && { perPage: value}),
-        }
+            ...(data.searchPost && { search: data.searchPost }),
+            ...(data.orderPost && data.orderPost !== 'default' && { orderPost: data.orderPost }),
+            ...(value && { perPage: value }),
+        };
         /*Send Request to Controller */
-        router.get(
-            route('dashboard'),queryString,
-            {
-                preserveState: true,
-                preserveScroll: true,
-            },
-        );
+        router.get(route('dashboard'), queryString, {
+            preserveState: true,
+            preserveScroll: true,
+        });
     };
 
-    const handleSelectFilterChange = (value: string) => {        
+    const handleSelectFilterChange = (value: string) => {
         setData('orderPost', value);
         const queryValue = {
-            ...(data.searchPost && {search : data.searchPost}),
-            ...(data.perPage && {perPage: data.perPage}),
-            ...(value && {orderPost : value})
-        }
-        router.get(
-            route('dashboard'), queryValue,
-            {
-                preserveScroll:true,
-                preserveState:true,
-            },
-        );
+            ...(data.searchPost && { search: data.searchPost }),
+            ...(data.perPage && { perPage: data.perPage }),
+            ...(value && { orderPost: value }),
+        };
+        router.get(route('dashboard'), queryValue, {
+            preserveScroll: true,
+            preserveState: true,
+        });
     };
 
     const handleFilterChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -63,10 +58,10 @@ export default function Dashboard({ ...props }: DashboardProps) {
         if (valueSearch.startsWith(' ')) return;
 
         setData('searchPost', valueSearch);
-        const queryFilter = {  
-            ...(valueSearch &&  {search: valueSearch}),
-            ...(data.orderPost && data.orderPost !=='default' && { orderPost : data.orderPost}),
-            ...(data.perPage && {perPage : data.perPage})
+        const queryFilter = {
+            ...(valueSearch && { search: valueSearch }),
+            ...(data.orderPost && data.orderPost !== 'default' && { orderPost: data.orderPost }),
+            ...(data.perPage && { perPage: data.perPage }),
         };
 
         /*Send Request to Controller */
@@ -87,19 +82,23 @@ export default function Dashboard({ ...props }: DashboardProps) {
                     onFilterChange={handleFilterChange}
                     onSelectFilterChange={handleSelectFilterChange}
                 />
-
                 <div className="grid auto-rows-min gap-4 md:grid-cols-2 lg:grid-cols-4">
-                    {posts.data.map((post) => {
-                        return (
-                            <CustomCard
-                                key={post.id}
-                                nro_c={post.nro_contract}
-                                date_c={post.date_contract}
-                                name_c={post.name_p}
-                                commts_post={post.comments}
-                            />
-                        );
-                    })}
+                    {posts.data.length > 0 ? (
+                        posts.data.map((post) => {
+                            return (
+                                <CustomCard
+                                    key={post.id}
+                                    nro_c={post.nro_contract}
+                                    date_c={post.date_contract}
+                                    name_c={post.name_p}
+                                    checked
+                                    commts_post={post.comments}
+                                />
+                            );
+                        })
+                    ) : (
+                        <CustomCardEmpty/>
+                    )}
                     {/* <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
                     </div>

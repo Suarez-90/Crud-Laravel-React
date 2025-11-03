@@ -19,7 +19,7 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {   
-        $postsQuery = Post::with(['comments']);
+        $postsQuery = Post::with(['comments'])->where('checked', true);
         
         if ($request->filled('search')  ) {
             $searchFilter = $request->search;

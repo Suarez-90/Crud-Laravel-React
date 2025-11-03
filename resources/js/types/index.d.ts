@@ -38,6 +38,7 @@ export interface User {
     email: string;
     avatar?: string;
     role:string;
+    active: boolean;
     user_name: string;
     sucursal: string;
     user_verified_at: string | null;
